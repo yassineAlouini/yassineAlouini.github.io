@@ -1,18 +1,75 @@
----
-layout: default
----
-
-<div class="posts">
-  {% for post in site.posts %}
-    <article class="post">
-
-      <h1><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h1>
-
-      <div class="entry">
-        {{ post.excerpt }}
-      </div>
-
-      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
-    </article>
-  {% endfor %}
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yassine Alouini</title>
+<meta name="description" content="Yassine Alouini — computer vision, multi-modal applications, and LLMs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,900&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FCF8F0; --ink:#21303F; --muted:#6E7A86;
+    --sea:#1C77C3; --sea-deep:#114F84; --turq:#11A79C; --coral:#E25A3B;
+    --ochre:#F2A53C; --pink:#D24E8E;
+    --wash:linear-gradient(100deg,var(--sea),var(--turq) 38%,var(--ochre) 72%,var(--coral));
+    --display:'Fraunces',Georgia,serif;
+    --sans:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    --hand:'Caveat',cursive;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;color:var(--ink);font-family:var(--sans);line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    display:flex;align-items:center;justify-content:center;text-align:center;padding:32px;
+    background:
+      radial-gradient(38rem 28rem at 108% -8%, rgba(210,78,142,.20), transparent 60%),
+      radial-gradient(36rem 26rem at -12% 6%, rgba(28,119,195,.22), transparent 60%),
+      radial-gradient(34rem 28rem at 50% 120%, rgba(17,167,156,.18), transparent 62%),
+      radial-gradient(28rem 22rem at 96% 88%, rgba(242,165,60,.18), transparent 60%),
+      var(--paper);
+    background-attachment:fixed;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+  main{position:relative;max-width:600px}
+  .hi{font-family:var(--hand);font-size:26px;color:var(--coral);transform:rotate(-2deg);
+    display:inline-block;margin-bottom:4px}
+  h1{font-family:var(--display);font-weight:900;font-size:clamp(48px,11vw,84px);line-height:1;
+    margin:6px 0 16px;letter-spacing:-.02em;
+    background:var(--wash);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .bio{font-size:19px;color:var(--ink);font-weight:500;margin:0 auto 32px;max-width:430px}
+  .bio b{font-weight:700}
+  nav{display:flex;gap:0;align-items:center;justify-content:center;flex-wrap:wrap;
+    font-size:18px;font-weight:500}
+  nav a{color:var(--sea-deep);text-decoration:none;padding:6px 16px;border-radius:999px;
+    transition:color .15s,background .15s}
+  nav a:hover{color:#fff;background:var(--sea)}
+  nav a.book:hover{background:var(--coral)}
+  nav a.kaggle:hover{background:var(--turq)}
+  nav a.github:hover{background:var(--ink)}
+  .dot{color:var(--muted);opacity:.5}
+  footer{position:fixed;bottom:18px;left:0;right:0;text-align:center;
+    font-family:var(--hand);font-size:18px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <span class="hi">hello, I'm</span>
+  <h1>Yassine Alouini</h1>
+  <p class="bio"><b>Computer vision</b>, multi-modal applications, and <b>LLMs</b>
+  for coding &amp; mathematical reasoning.</p>
+  <nav>
+    <a class="blog" href="/blog/">blog</a><span class="dot">·</span>
+    <a class="github" href="https://github.com/yassineAlouini">github</a><span class="dot">·</span>
+    <a class="kaggle" href="https://www.kaggle.com/yassinealouini">kaggle</a><span class="dot">·</span>
+    <a class="book" href="https://alouinimohamedyass.gumroad.com/l/computer_vision_with_pytorch">book</a>
+  </nav>
+</main>
+<footer>made with watercolors &amp; code</footer>
+</body>
+</html>
