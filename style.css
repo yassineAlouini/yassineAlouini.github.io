@@ -1,0 +1,43 @@
+/* Matches the blog's navy and ochre theme, using the reader's system fonts. */
+:root{
+  --paper:#ffffff;
+  --ink:#243447;
+  --muted:#526276;
+  --navy:#193653;
+  --link:#234f78;
+  --visited:#526782;
+  --tag-ink:#745020;
+  --tag-paper:#f6efdf;
+  --tag-line:#b69a70;
+  --serif:"Times New Roman",Times,"Liberation Serif",serif;
+  --mono:"Courier New",Courier,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+body{max-width:1040px;margin:0 auto;padding:64px 24px 32px;
+  background:var(--paper);color:var(--ink);font-family:var(--serif);
+  font-size:20px;line-height:1.55;overflow-wrap:anywhere;-webkit-font-smoothing:antialiased}
+.eyebrow{font:15px var(--mono);letter-spacing:.02em;color:var(--muted);margin-bottom:4px}
+h1{font:bold clamp(38px,6vw,60px)/1.05 var(--serif);color:var(--navy);
+  margin:4px 0 18px;letter-spacing:-.01em}
+.tags{margin-bottom:14px}
+.tag{display:inline-block;font:12px/1.4 var(--mono);text-transform:uppercase;letter-spacing:.03em;
+  color:var(--tag-ink);border:1px solid var(--tag-line);padding:0 5px;
+  margin:0 4px 4px 0;background:var(--tag-paper)}
+.bio{max-width:30em;font-size:23px;line-height:1.45;margin:0 0 28px}
+nav{display:flex;align-items:center;flex-wrap:wrap;gap:12px 24px;
+  border-top:2px solid var(--navy);padding-top:24px;font-size:19px}
+a{color:var(--link);text-decoration:underline;text-underline-offset:2px;padding:6px 0}
+a:visited{color:var(--visited)}
+a:hover{background:var(--navy);color:var(--paper);text-decoration:none}
+a:focus-visible{outline:2px solid var(--navy);outline-offset:3px}
+.blog{display:inline-block;font-weight:bold;color:var(--paper);background:var(--navy);
+  border:1px solid var(--navy);padding:9px 18px;text-decoration:none}
+.blog:visited{color:var(--paper)}
+.blog:hover{background:var(--paper);color:var(--navy)}
+footer{margin-top:48px;padding-top:14px;border-top:1px solid var(--navy);
+  color:var(--muted);font-size:16px}
+@media(max-width:640px){
+  body{padding:28px 16px;font-size:18px}
+  .bio{font-size:20px}
+  nav{gap:12px 20px}
+}
