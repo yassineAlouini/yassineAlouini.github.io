@@ -41,3 +41,21 @@ footer{margin-top:48px;padding-top:14px;border-top:1px solid var(--navy);
   .bio{font-size:20px}
   nav{gap:12px 20px}
 }
+
+/* Front-page fusion reactor. */
+.intro{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:40px;align-items:center;margin-bottom:28px}
+.intro .bio{margin-bottom:0}
+.reactor{width:360px;max-width:100%;margin:0;color:var(--navy)}
+.reactor-stage{aspect-ratio:16/11;background:url("assets/fusion-reactor.png") center/100% 100% no-repeat;
+  image-rendering:pixelated}
+.reactor img{display:block;width:100%;height:auto;image-rendering:pixelated}
+.reactor figcaption{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  border-top:1px solid #b8c5d2;padding-top:8px;font:10px/1.5 var(--mono);letter-spacing:.02em}
+.reactor-toggle{border:0;padding:4px 0;background:transparent;color:var(--navy);
+  font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.reactor-toggle:hover{color:var(--paper);background:var(--navy)}
+.reactor-toggle:focus-visible{outline:2px solid var(--navy);outline-offset:3px}
+@media(max-width:760px){
+  .intro{grid-template-columns:minmax(0,1fr);gap:24px}
+  .reactor{margin:0 auto}
+}
