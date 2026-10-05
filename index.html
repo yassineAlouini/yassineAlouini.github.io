@@ -6,9 +6,12 @@
 <title>Yassine Alouini</title>
 <meta name="description" content="Yassine Alouini — computer vision, multi-modal applications, and LLMs.">
 <link rel="stylesheet" href="style.css">
+<script src="assets/fusion-reactor.js" defer></script>
 </head>
 <body>
 <main id="main-content">
+  <div class="intro">
+  <div class="intro-copy">
   <div class="eyebrow">Hello, I’m</div>
   <h1>Yassine Alouini</h1>
   <div class="tags" aria-label="Areas of focus">
@@ -18,6 +21,20 @@
   </div>
   <p class="bio"><strong>Computer vision</strong>, multi-modal applications, and <strong>LLMs</strong>
   for coding &amp; mathematical reasoning.</p>
+  </div>
+    <figure class="reactor" aria-label="Pixel-art fusion reactor">
+      <div class="reactor-stage">
+        <picture>
+          <source srcset="assets/fusion-reactor.gif" media="(prefers-reduced-motion: no-preference)">
+          <img id="fusion-reactor" src="assets/fusion-reactor.png" width="320" height="220"
+            alt="A pixel-art stellarator in black, white and grey: a twisted, donut-shaped vessel wrapped in wavy coils, cut open at the front to show glowing pink plasma forming inside.">
+        </picture>
+      </div>
+      <figcaption><span>MAGNETIC CONFINEMENT <span aria-hidden="true">/</span> 01</span>
+        <button class="reactor-toggle" type="button" aria-controls="fusion-reactor" hidden>Pause animation</button>
+      </figcaption>
+    </figure>
+  </div>
   <nav aria-label="Explore my work">
     <a class="blog" href="/blog/">Read the blog <span aria-hidden="true">→</span></a>
     <a href="https://github.com/yassineAlouini">GitHub</a>
