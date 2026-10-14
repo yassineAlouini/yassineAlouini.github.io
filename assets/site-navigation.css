@@ -1,0 +1,16 @@
+/* Shared by the personal homepage, Sketchbook, blog index and all blog posts. */
+.site-header{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:24px;
+  max-width:992px;width:calc(100% - 48px);margin:48px auto 36px;padding:0 0 16px;
+  border-bottom:2px solid var(--navy);font:20px/1.55 var(--serif)}
+.site-header .site-home{font:bold 20px/1.55 var(--serif);text-decoration:none}
+.site-header nav{display:flex;align-items:center;flex-wrap:wrap;gap:12px 24px;
+  margin:0;padding:0;border:0;font:14px/1.55 var(--mono)}
+.site-header a{display:inline-block;padding:6px 0;color:var(--link);text-decoration:underline;text-underline-offset:2px}
+.site-header a:visited{color:var(--link)}
+.site-header a:hover{background:var(--navy);color:var(--paper);text-decoration:none}
+.site-header a:focus-visible{outline:2px solid var(--navy);outline-offset:3px}
+.site-header [aria-current]{color:var(--navy);text-decoration-thickness:2px}
+@media(max-width:640px){
+  .site-header{width:calc(100% - 32px);margin:28px auto 32px;align-items:flex-start;flex-direction:column;gap:8px}
+  .site-header nav{gap:12px 20px}
+}
