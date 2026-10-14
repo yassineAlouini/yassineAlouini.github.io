@@ -14,6 +14,11 @@ class PreviewHandler(SimpleHTTPRequestHandler):
         self.blog_root = blog_root
         super().__init__(*args, directory=str(SITE_ROOT), **kwargs)
 
+    def end_headers(self):
+        # Preview edits immediately instead of mixing cached HTML and CSS.
+        self.send_header("Cache-Control", "no-store")
+        super().end_headers()
+
     def translate_path(self, path):
         translated = Path(super().translate_path(path))
         relative = translated.relative_to(SITE_ROOT)

@@ -53,3 +53,7 @@ With the preview server running and Playwright browsers installed, run
 `python3 code/check-navigation.py` to check the shared links, header geometry,
 fonts and active states across all pages in Firefox and Chromium at desktop
 and mobile widths.
+Page layout stylesheets use a versioned URL so navigation changes do not reuse
+an older cached layout. The local preview server also sends `Cache-Control:
+no-store` for HTML and assets. Navigation checks simulate an old cached layout
+stylesheet as well as comparing fresh pages.
