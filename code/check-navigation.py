@@ -25,6 +25,14 @@ async def main():
         for engine in (p.firefox, p.chromium):
             browser = await engine.launch()
             page = await browser.new_page()
+            stale_requests = []
+
+            async def stale_stylesheet(route):
+                # Simulate a browser retaining the old, unversioned layout CSS.
+                stale_requests.append(route.request.url)
+                await route.fulfill(content_type="text/css", body="body{max-width:1040px;margin:0 auto;padding:64px 24px 32px}")
+
+            await page.route("**/style.css", stale_stylesheet)
             for width in (1280, 390, 320):
                 await page.set_viewport_size({"width": width, "height": 900})
                 reference = None
@@ -41,7 +49,9 @@ async def main():
                         const r = e.getBoundingClientRect(), s = getComputedStyle(e);
                         const n = e.querySelector('nav'), ns = getComputedStyle(n);
                         return [r.x,r.y,r.width,r.height,s.paddingBottom,s.borderBottomWidth,
-                            ns.font,ns.gap,ns.flexWrap,getComputedStyle(e.querySelector('.site-home')).font];
+                            ns.font,ns.gap,ns.flexWrap,getComputedStyle(e.querySelector('.site-home')).font,
+                            [...n.querySelectorAll('a')].map(a => {const r=a.getBoundingClientRect();
+                                return [r.x,r.y,r.width,r.height,getComputedStyle(a).font];})];
                     }""")
                     if reference is None:
                         reference = metrics
@@ -58,6 +68,7 @@ async def main():
             assert page.url == BASE + "/sketches/"
             await page.get_by_role("navigation", name="Main navigation").get_by_role("link", name="Home", exact=True).click()
             assert page.url == BASE + "/"
+            assert not stale_requests, f"Reused unversioned stylesheets: {stale_requests}"
             await browser.close()
 
 
