@@ -43,3 +43,13 @@ A pixel-art cat paints beside the Sketchbook palette. Its GIF, still PNG, and
 visibility handling live in `assets/painting-cat.*`. Reduced-motion preferences
 select the still, and animation pauses when the cat or tab is hidden. Regenerate the animation with
 `python3 code/render-painting-cat.py` (Pillow required).
+
+The homepage, Sketchbook, and blog use the same top navigation: Home, Blog,
+Sketchbook, and GitHub. Its styles live in `assets/site-navigation.css`; the blog
+loads this file from `/assets/site-navigation.css` on the personal-site origin.
+Keep the link order in `index.html`, `sketches/index.html`, and the blog's
+`site_navigation()` generator aligned. Kaggle and the book stay below the intro.
+With the preview server running and Playwright browsers installed, run
+`python3 code/check-navigation.py` to check the shared links, header geometry,
+fonts and active states across all pages in Firefox and Chromium at desktop
+and mobile widths.
