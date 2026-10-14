@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="620" viewBox="0 0 1000 620">
+<defs><filter id="wash"><feTurbulence type="fractalNoise" baseFrequency=".025" numOctaves="3" seed="8" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="8"/></filter></defs>
+<rect width="1000" height="620" fill="#faf8f1"/>
+<g fill="none" stroke="#68644d" stroke-width="3" stroke-linecap="round"><path d="M377 523Q466 369 554 150M455 393Q372 310 292 203M483 335Q594 313 697 221"/></g>
+<g filter="url(#wash)">
+<g fill="#7e8c64"><path d="M483 327Q414 232 453 206Q493 224 483 327M525 234Q480 158 500 122Q542 159 525 234M425 430Q350 364 357 327Q411 332 425 430M586 288Q587 204 632 184Q638 246 586 288M365 280Q291 270 266 238Q333 220 365 280"/></g>
+<g fill="#a8ab79"><path d="M469 363Q474 267 521 248Q536 311 469 363M536 209Q550 127 602 113Q592 179 536 209M395 467Q439 395 479 404Q466 454 395 467M628 261Q651 184 700 180Q699 230 628 261M328 248Q325 177 278 147Q268 212 328 248"/></g>
+<g fill="#c5a46e"><ellipse cx="559" cy="307" rx="13" ry="19" transform="rotate(30 559 307)"/><ellipse cx="382" cy="319" rx="12" ry="17" transform="rotate(-30 382 319)"/></g>
+<g fill="#62596a"><ellipse cx="516" cy="342" rx="12" ry="17"/><ellipse cx="533" cy="355" rx="12" ry="18"/><ellipse cx="407" cy="385" rx="11" ry="16"/></g>
+</g><g fill="none" stroke="#5d654b" stroke-width="1.2"><path d="M453 212l30 113m18-192 23 99m-163 99 65 98m199-233-36 91m-303-48 78 36m154-26-48 110m132-239-64 86m-60 198-81 58m299-278-65 77m-348-97 37 92"/></g></svg>
