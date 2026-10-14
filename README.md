@@ -40,7 +40,6 @@ text. Image paths are relative to the sketchbook page, such as
 The page needs no backend or build step.
 
 A pixel-art cat paints beside the Sketchbook palette. Its GIF, still PNG, and
-playback controls live in `assets/painting-cat.*`. Reduced-motion preferences
-select the still; the small pause button stops playback, and animation pauses
-when the cat or tab is hidden. Regenerate the animation with
+visibility handling live in `assets/painting-cat.*`. Reduced-motion preferences
+select the still, and animation pauses when the cat or tab is hidden. Regenerate the animation with
 `python3 code/render-painting-cat.py` (Pillow required).

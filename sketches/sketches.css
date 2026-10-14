@@ -21,7 +21,4 @@ h2{margin:0;color:var(--navy);font-size:26px;line-height:1.2}
 .sketchbook-bottom{display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
 .painting-cat{position:relative;width:192px;flex-shrink:0;margin-top:-14px}
 .painting-cat img{display:block;width:100%;height:auto;image-rendering:pixelated}
-.cat-toggle{position:absolute;right:0;bottom:0;width:24px;height:24px;padding:0;border:1px solid #b8c5d2;background:var(--paper);color:var(--navy);font:12px var(--mono);cursor:pointer}
-.cat-toggle:hover{border-color:var(--navy)}
-.cat-toggle:focus-visible{outline:2px solid var(--navy);outline-offset:3px}
 @media(max-width:640px){.sketchbook-bottom{gap:16px}.painting-cat{width:112px;margin-top:-10px}}
