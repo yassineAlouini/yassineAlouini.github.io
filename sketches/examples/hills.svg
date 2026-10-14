@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="620" viewBox="0 0 1000 620">
+<defs><filter id="wash"><feTurbulence type="fractalNoise" baseFrequency=".025" numOctaves="3" seed="8" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="8"/></filter></defs>
+<rect width="1000" height="620" fill="#faf8f1"/>
+<g filter="url(#wash)">
+<path fill="#a5bcc6" d="M144 295L327 199 441 280 565 190 822 316 865 401 141 409Z"/>
+<path fill="#c18568" d="M129 328Q282 230 471 329T871 302L876 461 128 465Z"/>
+<path fill="#b7ad78" d="M126 385Q327 303 512 395T877 345L874 484 126 484Z"/>
+<path fill="#d6b575" d="M127 436Q345 348 528 457T879 404L878 517Q645 544 448 506T127 512Z"/>
+<path fill="#6d7b65" d="M179 409l8-115 12-8 13 113Z M212 407l9-97 10-15 13 106Z M734 427l7-101 12-15 12 109Z"/>
+</g><g fill="none" stroke="#6c6255" stroke-width="1.6" stroke-linecap="round"><path d="M144 295l181-96 116 81 124-90 257 126M131 329q176-77 340 0t396-25M133 386q194-76 379 9t356-46M132 439q203-88 396 18t347-49M184 402l7-103m29 103 8-89m518 104 1-87"/><path d="M342 403q14 43 111 111m-74-122q34 59 122 121m-85-128q49 67 132 129M635 450l71-9m-523 38 94-6m405 29 113-14"/></g></svg>

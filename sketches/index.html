@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sketchbook — Yassine Alouini</title>
+<meta name="description" content="A sketchbook of drawings and the colors found in them.">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="sketches.css?v=painting-cat-6">
+<script src="sketches.js?v=minimal-4" defer></script>
+<script src="../assets/painting-cat.js" defer></script>
+</head>
+<body>
+<header class="page-header"><a href="../">Yassine Alouini</a><nav aria-label="Main navigation"><a href="/blog/">Blog</a><a href="./" aria-current="page">Sketchbook</a><a href="https://github.com/yassineAlouini">GitHub</a></nav></header>
+<main>
+  <section class="gallery" aria-label="Sketch carousel" aria-roledescription="carousel" tabindex="0">
+    <figure class="sketch"><div class="sketch-stage"><img id="sketch-image" alt="" width="1000" height="620"></div><figcaption><h2 id="sketch-title"></h2><div class="carousel-controls"><button id="previous" type="button" aria-label="Previous sketch">←</button><button id="next" type="button" aria-label="Next sketch">→</button></div></figcaption></figure>
+    <div class="sketchbook-bottom">
+      <div id="palette" class="palette" aria-label="Extracted color palette"></div>
+      <div class="painting-cat">
+        <picture>
+          <source srcset="../assets/painting-cat.gif" media="(prefers-reduced-motion: no-preference)">
+          <img id="painting-cat" src="../assets/painting-cat.png" width="256" height="192" alt="A pixel-art cat in an ochre apron painting a coastline at an easel.">
+        </picture>
+        <button class="cat-toggle" type="button" aria-label="Pause cat animation" aria-controls="painting-cat" hidden><span aria-hidden="true">Ⅱ</span></button>
+      </div>
+    </div>
+  </section>
+  <p id="status" class="visually-hidden" role="status" aria-live="polite"></p>
+  <noscript><p>Enable JavaScript to view sketches and extract palettes.</p></noscript>
+</main>
+</body>
+</html>

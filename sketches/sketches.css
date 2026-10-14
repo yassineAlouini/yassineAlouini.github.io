@@ -1,0 +1,27 @@
+.page-header{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:40px;padding-bottom:16px;border-bottom:2px solid var(--navy)}
+.page-header>a{font-size:20px;font-weight:bold;text-decoration:none}
+.page-header nav{border:0;padding:0;font:14px var(--mono);gap:24px}
+.page-header [aria-current]{color:var(--navy);text-decoration-thickness:2px}
+.gallery:focus-visible{outline:2px solid var(--tag-line);outline-offset:6px}
+.sketch{margin:0}
+.sketch-stage{background:#f7f5ef;border:1px solid #e6e2d8;height:420px;display:flex;align-items:center;justify-content:center;padding:22px;overflow:hidden}
+.sketch-stage img{display:block;width:100%;height:100%;object-fit:contain}
+.sketch figcaption{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:20px 0}
+h2{margin:0;color:var(--navy);font-size:26px;line-height:1.2}
+.carousel-controls{display:flex;gap:8px}
+.carousel-controls button{cursor:pointer;color:var(--navy);background:white;border:1px solid #b8c5d2;width:42px;height:38px;font:20px var(--serif)}
+.carousel-controls button:hover{border-color:var(--navy)}
+.carousel-controls button:focus-visible{outline:2px solid var(--navy);outline-offset:3px}
+.palette{width:100%;max-width:360px}
+.palette-bar{display:flex;width:100%;height:32px}
+.swatch-color{display:block;flex-basis:0;min-width:0}
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+@media(max-width:640px){.page-header{align-items:flex-start;flex-direction:column;gap:8px;margin-bottom:32px}.page-header nav{gap:20px}.sketch-stage{height:280px;padding:10px}.sketch figcaption{margin:18px 0}h2{font-size:23px}}
+
+.sketchbook-bottom{display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+.painting-cat{position:relative;width:192px;flex-shrink:0;margin-top:-14px}
+.painting-cat img{display:block;width:100%;height:auto;image-rendering:pixelated}
+.cat-toggle{position:absolute;right:0;bottom:0;width:24px;height:24px;padding:0;border:1px solid #b8c5d2;background:var(--paper);color:var(--navy);font:12px var(--mono);cursor:pointer}
+.cat-toggle:hover{border-color:var(--navy)}
+.cat-toggle:focus-visible{outline:2px solid var(--navy);outline-offset:3px}
+@media(max-width:640px){.sketchbook-bottom{gap:16px}.painting-cat{width:112px;margin-top:-10px}}

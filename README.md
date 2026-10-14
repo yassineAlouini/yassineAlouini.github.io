@@ -18,6 +18,29 @@ The GIF, still, and playback controls live in `assets/`. To regenerate the image
 run `python3 code/render-fusion-reactor.py` with Pillow, Playwright, and its Chromium
 browser installed. Serving the site does not require these tools.
 
-Preview locally with `python3 -m http.server 8766`.
+Preview locally with `python3 code/serve.py`. This serves the homepage and
+sketchbook, and maps `/blog/` to the adjacent `../blog` repository, including its
+posts and assets. Use `--blog-dir /path/to/blog` if that repository lives elsewhere.
 
 Website generated with assistance from AI agents.
+
+The **Sketchbook** at `/sketches/` matches the main page and shows a carousel of
+three original SVG example studies, with illustrative sample drawings.
+Palettes are extracted in the browser using a pixel-color histogram; near-white
+paper is excluded when enough pigment remains. The palette is a continuous bar
+of flat colors, sized by their pixel proportions, without explanatory labels.
+Use the arrow buttons, keyboard arrows while focused in the gallery, or a
+horizontal swipe to browse.
+
+Add personal sketches through a PR: commit the image files under `sketches/`
+(for example, `sketches/images/my-sketch.jpg`) and add an entry to the `sketches`
+array in `sketches/sketches.js` with `title`, `src`, and descriptive `alt`
+text. Image paths are relative to the sketchbook page, such as
+`images/my-sketch.jpg`. Colors are derived automatically from the image.
+The page needs no backend or build step.
+
+A pixel-art cat paints beside the Sketchbook palette. Its GIF, still PNG, and
+playback controls live in `assets/painting-cat.*`. Reduced-motion preferences
+select the still; the small pause button stops playback, and animation pauses
+when the cat or tab is hidden. Regenerate the animation with
+`python3 code/render-painting-cat.py` (Pillow required).
