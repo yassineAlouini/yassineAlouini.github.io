@@ -78,3 +78,18 @@ Page layout stylesheets use a versioned URL so navigation changes do not reuse
 an older cached layout. The local preview server also sends `Cache-Control:
 no-store` for HTML and assets. Navigation checks simulate an old cached layout
 stylesheet as well as comparing fresh pages.
+
+
+A small tabby visits the homepage margins (`assets/sidebar-cat.js`). Its repeating
+routine bats a bouncing ball, investigates the reactor and matrix, chases a
+stitched wind-up mouse, reaches for the focus tags and book link, grooms and naps.
+Anchors follow the live layout and scrolling; compact layouts keep play in a
+reserved strip below the links. The canvas is click-through and decorative.
+Click an empty right margin to roll the ball; the small paw button toggles a nap.
+Reduced motion shows a sleeping cat, and hidden tabs stop the animation loop.
+No network services, sprite downloads or build step are required.
+
+Check the cat's full routine, click-through behavior, real link navigation, nap
+control, responsive layout and reduced motion with
+`python3 code/check-sidebar-cat.py http://localhost:8770` against a running preview.
+The check uses a controlled browser clock and requires Chromium and Firefox.
