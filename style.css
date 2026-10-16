@@ -77,3 +77,8 @@ footer{max-width:992px;width:calc(100% - 48px);margin:48px auto 0;padding-top:14
 .cat-curious{filter:drop-shadow(0 0 5px #b69a7070)}
 @media(max-width:1160px){body>footer{margin-top:112px}}
 @media(prefers-reduced-motion:reduce){.cat-curious{filter:none}}
+
+.cat-pet{position:fixed;left:0;top:0;width:84px;height:80px;z-index:6;
+  padding:0;border:0;background:transparent;pointer-events:none;contain:strict}
+.cat-pet[hidden]{display:none}
+.cat-pet:focus-visible{outline:2px dashed var(--tag-line);outline-offset:-4px;border-radius:50%}

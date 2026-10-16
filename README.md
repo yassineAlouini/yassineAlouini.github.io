@@ -80,22 +80,40 @@ no-store` for HTML and assets. Navigation checks simulate an old cached layout
 stylesheet as well as comparing fresh pages.
 
 
-A small fluffy tabby visits the homepage margins (`assets/sidebar-cat.js`). Its repeating
-routine bats a bouncing ball, investigates the reactor and matrix, chases a
-stitched wind-up mouse, reaches for the focus tags and book link, grooms and naps.
-Anchors follow the live layout and scrolling; compact layouts keep play in a
-reserved strip below the links. The canvas is click-through and decorative.
-Click an empty right margin to roll the ball; the small paw button toggles a nap.
-Reduced motion shows a sleeping cat, and hidden tabs stop the animation loop.
+A small fluffy tabby follows the cursor (`assets/sidebar-cat.js`), trailing it
+with a comfortable gap, eased steering and a distance-driven trot. It stops to
+inspect the reactor, tags or book link when the cursor rests over them. After
+five seconds without pointer input it curls up in place; moving the pointer
+wakes it. There are no autonomous roaming routes. Touch input keeps the cat in
+the reserved strip below the resource links. The paw button manually toggles a
+nap; manual naps stay asleep until explicitly woken.
+
+Quick pointer movements elicit a small leap; slow movement near the cat can
+prompt a back-roll with a brief upside-down, paw-wiggling pause. These reactions
+happen while following input, rather than sending the cat to random locations.
+Click the cat's body to pet it: it relaxes, purrs visually and shows a small heart.
+“Pet the cat” is also a keyboard-accessible button; page links remain click-through.
+
+While the pointer is active, the cat occasionally charges a plasma beam in its
+mouth: a 0.9-second gathering glow and progress ring precede the burst. The beam
+uses the reactor's exact magenta/pink palette and fades over 0.65 seconds. Sleeping and reduced motion suppress the effect.
+Click an empty right margin to roll a ball; a toy mouse follows the pointer in
+the margin. The canvas is decorative and click-through. Reduced motion shows
+a stationary sleeping cat; sleeping and hidden tabs stop the animation loop.
 No network services, sprite downloads or build step are required.
 
-Check the cat's full routine, click-through behavior, real link navigation, nap
-control, responsive layout and reduced motion with
+The cat has short fur-covered legs, broad paws and rounded haunches concealing
+the leg bends. Eyes, pupils, brows, head tilt, mouth and tail convey curious,
+playful, mischievous, delighted, focused, puzzled, content and sleepy moods.
+Check following, idle sleep/wake, manual naps, petting, leaps, back-rolls,
+charge-before-fire, plasma colors, idle redraw counts, partial clears, link navigation,
+responsive layout and reduced motion with
 `python3 code/check-sidebar-cat.py http://localhost:8770` against a running preview.
 The check uses a controlled browser clock and requires Chromium and Firefox.
 
-The cat follows sampled Bezier routes through the margin, steers with velocity
-easing, and turns gradually. Its short fur-covered legs plant and lift broad paws using a
-distance-driven trot; rounded haunches conceal the rear leg bends. Expressions evolve with the activities: curious, playful,
-mischievous, delighted, focused, puzzled, surprised, content and sleepy. Eyes,
-pupils, eyebrows, head tilt, mouth and tail contribute to the expression.
+Rendering is capped at 30 fps and stops entirely during sleep, reduced motion and
+hidden tabs. The canvas clears only the previous cat/toy/effect rectangles rather
+than the full viewport. Canvas buffers resize only when dimensions change; pointer
+handlers are passive, layout reads occur only on resize/scroll, reaction classes
+are cached, and DOM attributes/transforms are written only when their values change.
+The cat needs no framework, image downloads, audio or external service.

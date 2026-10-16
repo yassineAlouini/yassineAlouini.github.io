@@ -1,18 +1,26 @@
 /* A little visitor, drawn locally on a click-through canvas. No libraries/assets.
-   Layout anchors are read from the page; all coordinates are viewport-relative. */
+   The cat trails pointer input, sleeps after five idle seconds, and sometimes
+   charges and sends a short pink plasma ribbon from its mouth. Coordinates are viewport-relative. */
 (() => {
   "use strict";
   const canvas = document.querySelector("#sidebar-cat"), button = document.querySelector(".cat-rest");
   if (!canvas || !button) return;
   const ctx = canvas.getContext("2d"), motion = matchMedia("(prefers-reduced-motion: reduce)");
   const $ = s => document.querySelector(s);
+  const petButton=$(".cat-pet");
   const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
   const color = {ink:"#193653", fur:"#91a0af", light:"#d2d8de", white:"#f6f4ed", gold:"#b69a70", pink:"#d88fa6", shadow:"#edf1f5"};
-  const scenes = [["ball",8],["reactor",10],["mouse",10],["sections",10],["matrix",8],["book",10],["groom",5],["nap",8]];
-  const cat = {x:0,y:0,face:-1,turn:-1,vx:0,vy:0,stride:0,moving:false,pose:"sit",emotion:"curious"};
-  const ball = {x:0,y:0,vx:0,vy:0,angle:0};
-  let layout, path=[], scene=0, elapsed=0, arrived=0, time=0, last=0, raf=0, resting=false, initialized=false;
-  let mouse={x:0,y:0}, batted=false, dirty=true;
+  const cat = {x:0,y:0,face:-1,turn:-1,vx:0,vy:0,stride:0,moving:false,pose:"sleep",emotion:"sleepy"};
+  const pointer = {x:0,y:0,dx:1,at:-Infinity,seen:false,type:"mouse",focus:null,speed:0};
+  const ball = {x:0,y:0,vx:0,vy:0,angle:0,ground:0,active:false};
+  const mouse = {x:0,y:0};
+  // The reactor's actual palette; bursts use a smooth fade rather than flicker.
+  const plasma = ["#4a1070","#8e2a9e","#d4459a","#ff7ab8","#ffd6ea"];
+  const IDLE_SLEEP = 5;
+  let layout,time=0,last=0,raf=0,resting=false,initialized=false,dirty=true;
+  let beam=null,beamWait=4+Math.random()*9,shootCount=0;
+  let trick=null,trickCooldown=0,nearTime=0,petUntil=0,petTimer=0,petAsleep=false;
+  let reaction=null,painted=null;
 
   function bounds(selector) { return $(selector)?.getBoundingClientRect(); }
   function measure() {
@@ -32,14 +40,15 @@
       book:{x:Math.min(book.right+46,main.right-35),y:book.bottom+4}};
     if (compact) { layout.home=innerWidth-55; layout.min=42; }
     const dpr=Math.min(devicePixelRatio||1,2);
-    canvas.width=Math.round(innerWidth*dpr); canvas.height=Math.round(innerHeight*dpr);
+    const width=Math.round(innerWidth*dpr),height=Math.round(innerHeight*dpr);
+    if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;painted=null;}
     ctx.setTransform(dpr,0,0,dpr,0,0);
     if (!initialized) {
       cat.x=layout.home; cat.y=ground;
       ball.x=cat.x-48;ball.y=ground-7;
       initialized=true;
     }
-    if (initialized && previous) {
+    if (initialized && previous && (!pointer.seen || motion.matches)) {
       if (previous.compact !== compact) { cat.x=layout.home;cat.y=ground;cat.vx=cat.vy=0; }
       else {
         const shift=ground-previous.ground;
@@ -47,124 +56,116 @@
       }
     }
     cat.x=clamp(cat.x,34,innerWidth-34);
+    if(pointer.seen&&!motion.matches)cat.y=clamp(cat.y,65,innerHeight-12);
     dirty=false;
   }
-  function clearReaction() { document.querySelectorAll(".cat-curious").forEach(e=>e.classList.remove("cat-curious")); }
-  function plan() {
-    clearReaction(); arrived=0;batted=false;
-    const kind=scenes[scene][0];
-    let goal=layout[kind]||{x:layout.home,y:layout.ground};
-    if(layout.compact) goal={x:layout.home,y:layout.ground};
-    // Two flowing Bezier segments bow through the outside margin. The route
-    // stays away from the text while rounding the old right-angle corners.
-    const start={x:cat.x,y:cat.y}, bend={x:layout.home,y:(cat.y+goal.y)/2};
-    path=[];
-    function curve(a,b,c,d) {
-      for(let i=1;i<=24;i++) {
-        const t=i/24,u=1-t;
-        path.push({x:u*u*u*a.x+3*u*u*t*b.x+3*u*t*t*c.x+t*t*t*d.x,
-                   y:u*u*u*a.y+3*u*u*t*b.y+3*u*t*t*c.y+t*t*t*d.y});
-      }
-    }
-    if(Math.hypot(goal.x-start.x,goal.y-start.y)<80) {
-      curve(start,{x:start.x,y:start.y-14},{x:goal.x,y:goal.y-14},goal);
-    }else {
-      const outer=clamp(layout.home+14,34,innerWidth-34);
-      curve(start,{x:layout.home,y:start.y},{x:outer,y:bend.y},bend);
-      curve(bend,{x:outer,y:goal.y},{x:goal.x+45,y:goal.y+12},goal);
-    }
-    if(kind==="ball") {ball.x=layout.home-44;ball.y=layout.ground-7;ball.vx=0;ball.vy=0;}
-    canvas.dataset.activity=layout.compact&&["reactor","sections","matrix","book"].includes(kind)?"ball":kind;
+  function clearReaction() { if(reaction){reaction.classList.remove("cat-curious");reaction=null;} }
+  function react(element) { if(reaction!==element){clearReaction();reaction=element;reaction?.classList.add("cat-curious");} }
+  function mouthPosition() {
+    const face=cat.turn<0?-1:1,scale=(.88+.12*Math.abs(cat.turn))*2;
+    return {x:cat.x+3*face*scale,y:cat.y-32};
   }
-  function move(target,dt,speed=180,through=false) {
+  function move(target,dt,speed=190) {
     const dx=target.x-cat.x,dy=target.y-cat.y,d=Math.hypot(dx,dy);
-    if(through&&d<9)return true;
-    if(!through&&d<2.5&&Math.hypot(cat.vx,cat.vy)<22) {
+    if(d<2.5&&Math.hypot(cat.vx,cat.vy)<22) {
       cat.x=target.x;cat.y=target.y;cat.vx=cat.vy=0;return true;
     }
-    const pace=through?speed:Math.min(speed,Math.sqrt(2*400*d));
-    const blend=1-Math.exp(-dt*8);
+    const pace=Math.min(speed,Math.sqrt(2*340*d)),blend=1-Math.exp(-dt*7);
     cat.vx+=(dx/Math.max(d,.01)*pace-cat.vx)*blend;
     cat.vy+=(dy/Math.max(d,.01)*pace-cat.vy)*blend;
     const stepX=cat.vx*dt,stepY=cat.vy*dt;
-    cat.x=clamp(cat.x+stepX,34,innerWidth-34);cat.y+=stepY;
+    cat.x=clamp(cat.x+stepX,34,innerWidth-34);cat.y=clamp(cat.y+stepY,65,innerHeight-12);
     cat.stride+=Math.hypot(stepX,stepY)*Math.PI*2/48;
     if(Math.abs(cat.vx)>14)cat.face=cat.vx>0?1:-1;
     return false;
   }
-  function expression(kind) {
-    if(cat.pose==="sleep")return "sleepy";
-    if(cat.pose==="startled")return "surprised";
-    const moods={ball:["playful","mischievous","delighted"],mouse:["focused","playful"],
-      reactor:["curious","surprised","curious"],sections:["curious","delighted"],
-      matrix:["puzzled","curious"],book:["content","curious"],groom:["content","sleepy"]};
-    const choices=moods[kind]||["curious"];
-    return choices[Math.floor(arrived/2.3)%choices.length];
+  function diagnostics(activity) {
+    const state={activity,emotion:cat.emotion,x:cat.x.toFixed(2),y:cat.y.toFixed(2),
+      beam:String(beam?.stage==="fire"),charging:String(beam?.stage==="charge"),
+      shots:String(shootCount),trick:trick?.kind||"none",petting:String(performance.now()<petUntil)};
+    for(const [key,value] of Object.entries(state))if(canvas.dataset[key]!==value)canvas.dataset[key]=value;
   }
   function update(dt) {
-    time+=dt;
-    if(resting||motion.matches) {canvas.dataset.activity="nap";cat.pose="sleep";cat.emotion="sleepy";canvas.dataset.emotion="sleepy";cat.vx=cat.vy=0;cat.moving=false;cat.x=layout.home;cat.y=layout.ground;return;}
-    elapsed+=dt;
-    if(elapsed>scenes[scene][1]) {scene=(scene+1)%scenes.length;elapsed=0;plan();}
-    let kind=scenes[scene][0];
-    if(layout.compact&&["reactor","sections","matrix","book"].includes(kind))kind="ball";
-    cat.moving=false;cat.pose="stand";
-    if(path.length) {
-      cat.moving=true;
-      while(path.length>1&&Math.hypot(path[0].x-cat.x,path[0].y-cat.y)<13)path.shift();
-      if(move(path[0],dt,210,path.length>1))path.shift();
-    } else {
-      arrived+=dt;
-      if(kind==="ball") {
-        cat.face=ball.x>cat.x?1:-1;
-        cat.pose=arrived%2.6<.6?"crouch":"paw";
-        if(arrived>.7&&!batted){ball.vx=cat.face*135;ball.vy=-165;batted=true;}
-        if(arrived>1.2)cat.moving=!move({x:clamp(ball.x-cat.face*46,layout.min,layout.max),y:layout.ground},dt,95);
-      } else if(kind==="mouse") {
-        const center=layout.compact?innerWidth*.55:(layout.min+layout.max)/2;
-        const radius=layout.compact?Math.min(95,innerWidth*.27):Math.max(12,(layout.max-layout.min)/2-8);
-        mouse.x=center+Math.sin(arrived*2.1)*radius;
-        mouse.y=layout.ground+(layout.compact?0:55+Math.sin(arrived*1.1)*33);
-        cat.moving=!move({x:clamp(mouse.x-18,32,innerWidth-32),y:mouse.y},dt,140);
-        cat.pose=arrived%2<.4?"pounce":"crouch";
-      } else if(kind==="nap")cat.pose="sleep";
-      else if(kind==="groom")cat.pose="groom";
-      else {
-        cat.pose=arrived%1.5<.65?"paw":"sit";
-        cat.face=kind==="sections"||kind==="book"?-1:1;
-        const selector={reactor:".reactor:not(.matrix)",matrix:".matrix",sections:".intro .tags",book:".book-link"}[kind];
-        if(selector)$(selector).classList.toggle("cat-curious",cat.pose==="paw");
-        if(kind==="reactor"&&arrived>2&&arrived<2.8)cat.pose="startled";
-      }
+    time+=dt;trickCooldown=Math.max(0,trickCooldown-dt);
+    const now=performance.now(),idle=(now-pointer.at)/1000;
+    if(now<petUntil){
+      clearReaction();beam=null;trick=null;cat.vx=cat.vy=0;cat.moving=false;
+      cat.pose=petAsleep||motion.matches?"sleep":"sit";cat.emotion="content";
+      diagnostics("pet");return;
     }
+    if(resting||motion.matches||!pointer.seen||idle>=IDLE_SLEEP) {
+      clearReaction();beam=null;trick=null;nearTime=0;
+      cat.pose="sleep";cat.emotion="sleepy";cat.vx=cat.vy=0;cat.moving=false;
+      if(motion.matches){cat.x=layout.home;cat.y=layout.ground;}
+      diagnostics("nap");return;
+    }
+    const side=pointer.x>=cat.x?1:-1;
+    const target={x:clamp(pointer.x-side*58,38,innerWidth-38),
+      y:pointer.type==="touch"?clamp(layout.ground,65,innerHeight-12):clamp(pointer.y+36,65,innerHeight-12)};
+    let settled=true;
+    if(!beam&&trick?.kind!=="roll")settled=move(target,dt,idle>2?120:205);
+    else cat.vx=cat.vy=0;
+    cat.moving=!settled;cat.pose=settled?"sit":"stand";
     cat.turn+=(cat.face-cat.turn)*(1-Math.exp(-dt*11));
-    cat.emotion=expression(kind);
-    canvas.dataset.emotion=cat.emotion;
-    canvas.dataset.x=cat.x.toFixed(2);canvas.dataset.y=cat.y.toFixed(2);
-    // A small bouncing ball with friction, bounded to the side play lane.
-    if(kind==="ball") {
+    const moods=["curious","playful","mischievous","delighted","focused"];
+    cat.emotion=idle>3.5?"sleepy":moods[Math.floor(time/2.8)%moods.length];
+    if(settled&&pointer.focus&&!beam&&!trick){
+      cat.pose=Math.sin(time*3)>.5?"paw":"sit";
+      cat.emotion=pointer.focus.matches(".matrix")?"puzzled":pointer.focus.matches(".book-link")?"content":"curious";
+    }
+    react(cat.pose==="paw"?pointer.focus:null);
+    if(idle>3.5)cat.pose="groom";
+    if(trick){trick.age+=dt;if(trick.age>trick.duration)trick=null;}
+    const nearby=Math.hypot(pointer.x-cat.x,pointer.y-(cat.y-24))<105;
+    nearTime=nearby&&pointer.speed<190&&idle<.7?nearTime+dt:0;
+    if(!beam&&!trick&&nearTime>1.6&&trickCooldown===0){
+      trick={kind:"roll",age:0,duration:2.25};trickCooldown=8;nearTime=0;
+    }
+    if(trick){cat.pose=trick.kind;cat.emotion="playful";}
+    // A charge-up precedes every mouth beam. Only the timing/length are random.
+    if(beam){
+      beam.age+=dt;
+      if(beam.stage==="charge"&&beam.age>=.9){
+        const mouth=mouthPosition();beam.stage="fire";beam.age=0;
+        beam.angle=Math.atan2(pointer.y-mouth.y,pointer.x-mouth.x);shootCount++;
+      }else if(beam.stage==="fire"&&beam.age>.65)beam=null;
+    }else if(idle<2.5&&!trick){
+      beamWait-=dt;
+      if(beamWait<=0){beam={stage:"charge",age:0,angle:0,length:115+Math.random()*55};beamWait=8+Math.random()*14;}
+    }
+    if(beam){cat.moving=false;cat.pose=beam.stage==="charge"?"charge":"shoot";cat.emotion=beam.stage==="charge"?"focused":"delighted";}
+    if(ball.active){
       ball.vy+=480*dt;ball.x+=ball.vx*dt;ball.y+=ball.vy*dt;
       ball.angle+=ball.vx*dt/9;ball.vx*=Math.pow(.55,dt);
-      if(ball.y>layout.ground-7){ball.y=layout.ground-7;ball.vy=-Math.abs(ball.vy)*.57;if(Math.abs(ball.vy)<10)ball.vy=0;}
-      if(ball.x<layout.min-12||ball.x>layout.max+10){ball.x=clamp(ball.x,layout.min-12,layout.max+10);ball.vx*=-.8;}
+      if(ball.y>ball.ground-7){ball.y=ball.ground-7;ball.vy=-Math.abs(ball.vy)*.57;if(Math.abs(ball.vy)<10)ball.vy=0;}
+      if(ball.x<10||ball.x>innerWidth-10){ball.x=clamp(ball.x,10,innerWidth-10);ball.vx*=-.8;}
     }
+    mouse.x=pointer.x;mouse.y=pointer.y+7;
+    diagnostics(idle>3.5?"idle":"follow");
   }
 
   function box(x,y,w,h,c){ctx.fillStyle=color[c]||c;ctx.fillRect(Math.round(x),Math.round(y),w,h);}
   function stroke(points,c,width=1){ctx.strokeStyle=color[c]||c;ctx.lineWidth=width;ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();}
   function polygon(points,c){ctx.fillStyle=color[c];ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fill();}
   function drawCat() {
-    const pose=cat.pose, sleeping=pose==="sleep", sit=["sit","paw","groom","startled"].includes(pose);
-    const gait=cat.moving?Math.sin(cat.stride):0;
+    const pose=cat.pose, sleeping=pose==="sleep", sit=["sit","paw","groom","startled","charge","shoot"].includes(pose);
     const motionAmount=cat.moving?clamp(Math.hypot(cat.vx,cat.vy)/140,0,1):0;
     const mood=cat.emotion;
-    const hop=pose==="pounce"?Math.abs(Math.sin(time*8))*9:pose==="startled"?7:cat.moving?(1-Math.cos(cat.stride*2))*.55*motionAmount:0;
+    const hop=pose==="leap"&&trick?Math.sin(Math.PI*trick.age/trick.duration)*34:pose==="pounce"?Math.abs(Math.sin(time*8))*9:pose==="startled"?7:cat.moving?(1-Math.cos(cat.stride*2))*.55*motionAmount:0;
     function oval(x,y,rx,ry,c){ctx.fillStyle=color[c];ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();}
     function soft(points,c,width){ctx.lineCap="round";ctx.lineJoin="round";stroke(points,c,width);}
     ctx.save();ctx.translate(cat.x,cat.y);
     oval(0,1,sleeping?28:25,3,"shadow");
     const turningWidth=.88+.12*Math.abs(cat.turn);
     ctx.scale((cat.turn<0?-1:1)*turningWidth*2,2);ctx.translate(0,-hop/2);
+    if(pose==="roll"&&trick){
+      const progress=trick.age/trick.duration;
+      const smooth=x=>x*x*(3-2*x);
+      const angle=progress<.23?Math.PI*smooth(progress/.23):progress<.65?Math.PI+Math.sin(time*9)*.06:Math.PI+Math.PI*smooth((progress-.65)/.35);
+      ctx.translate(0,-10);ctx.rotate(angle);ctx.translate(0,10);
+    }else if(pose==="leap"&&trick){
+      ctx.translate(0,-9);ctx.rotate(-Math.sin(Math.PI*trick.age/trick.duration)*.12);ctx.translate(0,9);
+    }
     if(sleeping){
       // A round ball of fluff, with the tail tucked around a sleepy cheek.
       oval(-1,-6,14,8,"ink");oval(-1,-6.5,13,7,"fur");
@@ -215,8 +216,9 @@
       soft([[x+1.7,y-.5],[x+1.7,y+.5]],"fur",.35);
     }
     function walkingLeg(x,phase,front,near) {
-      const swing=Math.sin(phase)*3.6*motionAmount;
-      const lift=Math.max(0,Math.cos(phase))*3.2*motionAmount;
+      const airborne=pose==="leap";
+      const swing=pose==="roll"?Math.sin(time*8+phase)*1.8:airborne?(front?2:-1):Math.sin(phase)*3.6*motionAmount;
+      const lift=pose==="roll"?2+Math.sin(time*7+phase):airborne?3:Math.max(0,Math.cos(phase))*3.2*motionAmount;
       furryLeg([x,front?-8:-6],[x+swing,-lift],front,near);
     }
     if(sit){
@@ -271,7 +273,8 @@
       ctx.save();ctx.globalAlpha=.3;oval(hx-7,hy+2,2,1.2,"pink");oval(hx+7,hy+2,2,1.2,"pink");ctx.restore();
     }
     polygon([[hx-1.5,hy+2],[hx+1.5,hy+2],[hx,hy+3.5]],"pink");
-    if(mood==="surprised")oval(hx,hy+5,1.1,1.4,"ink");
+    if(pose==="charge"||pose==="shoot"){oval(hx,hy+5,pose==="shoot"?1.8:1.2,1.5,"ink");}
+    else if(mood==="surprised")oval(hx,hy+5,1.1,1.4,"ink");
     else{
       soft([[hx,hy+3.5],[hx,hy+4.7],[hx-1.5,hy+5.2]],"ink",.65);
       soft([[hx,hy+4.7],[hx+1.5,hy+5.2]],"ink",.65);
@@ -295,54 +298,129 @@
     stroke([[-6,-2],[6,2]],"ink",2);stroke([[-2,-6],[2,6]],"white",2);ctx.restore();
   }
   function drawMouse(){
-    ctx.save();ctx.translate(Math.round(mouse.x),Math.round(mouse.y-4));ctx.scale(Math.cos(arrived*2.1)<0?-1:1,1);
+    ctx.save();ctx.translate(Math.round(mouse.x),Math.round(mouse.y-4));ctx.scale(pointer.dx<0?-1:1,1);
     stroke([[-8,0],[-16,-3],[-19,0],[-17,4]],"gold",2);
     polygon([[-10,1],[-7,-6],[2,-6],[9,-1],[7,3],[-7,4]],"fur");
     box(-2,-9,5,5,"light");box(6,-2,2,2,"ink");box(9,0,2,2,"pink");
     stroke([[-6,-3],[2,2]],"white");stroke([[-2,-6],[-2,-12],[1,-12],[1,-9]],"gold");
     ctx.restore();
   }
+  function drawPlasma() {
+    if(!beam)return;
+    const {x,y}=mouthPosition();
+    ctx.save();ctx.translate(x,y);ctx.lineCap="round";
+    if(beam.stage==="charge"){
+      const progress=clamp(beam.age/.9,0,1),radius=3+progress*9;
+      const glow=ctx.createRadialGradient(0,0,1,0,0,radius);
+      glow.addColorStop(0,plasma[4]);glow.addColorStop(.35,plasma[3]);glow.addColorStop(1,"#d4459a00");
+      ctx.fillStyle=glow;ctx.globalAlpha=.35+.65*progress;ctx.beginPath();ctx.arc(0,0,radius,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle=plasma[3];ctx.lineWidth=1.1;ctx.beginPath();ctx.arc(0,0,13,-Math.PI/2,-Math.PI/2+Math.PI*2*progress);ctx.stroke();
+      for(let i=0;i<6;i++){
+        const angle=i*Math.PI/3+beam.age*5,distance=21*(1-progress)+3;
+        ctx.fillStyle=plasma[i%3+2];ctx.beginPath();ctx.arc(Math.cos(angle)*distance,Math.sin(angle)*distance,1.3,0,Math.PI*2);ctx.fill();
+      }
+      ctx.restore();return;
+    }
+    const fade=Math.sin(Math.PI*beam.age/.65);
+    ctx.rotate(beam.angle);
+    const ribbon=width=>{
+      ctx.beginPath();ctx.moveTo(0,0);
+      for(let i=1;i<=20;i++){
+        const progress=i/20;
+        ctx.lineTo(progress*beam.length,Math.sin(progress*16-beam.age*17)*3.5*Math.sin(progress*Math.PI));
+      }
+      ctx.lineWidth=width;ctx.stroke();
+    };
+    ctx.globalAlpha=fade*.25;ctx.strokeStyle=plasma[1];ribbon(16);
+    ctx.globalAlpha=fade*.65;ctx.strokeStyle=plasma[2];ribbon(9);
+    ctx.globalAlpha=fade;ctx.strokeStyle=plasma[3];ribbon(4.5);
+    ctx.strokeStyle=plasma[4];ribbon(1.7);
+    for(let i=0;i<5;i++){
+      const progress=(beam.age*1.5+i*.19)%1;
+      ctx.fillStyle=plasma[i%3+2];ctx.globalAlpha=fade*(1-progress);
+      ctx.beginPath();ctx.arc(progress*beam.length,Math.sin(i*7+beam.age*8)*10*progress,1.5,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+  }
+  function drawAffection(){
+    if(performance.now()>=petUntil)return;
+    const rise=motion.matches?0:(1-(petUntil-performance.now())/1800)*12;
+    ctx.save();ctx.translate(cat.x,cat.y-65-rise);ctx.fillStyle=color.pink;
+    ctx.beginPath();ctx.moveTo(0,4);ctx.bezierCurveTo(-13,-3,-6,-12,0,-5);ctx.bezierCurveTo(6,-12,13,-3,0,4);ctx.fill();
+    ctx.fillStyle=color.fur;ctx.font="10px Georgia,serif";ctx.fillText("purr",24,30+rise);
+    ctx.restore();
+  }
   function render(){
-    ctx.clearRect(0,0,innerWidth,innerHeight);
     if(!layout)return;
-    const kind=canvas.dataset.activity;
+    // Clear only previously painted pieces, not a viewport-sized rectangle.
+    if(painted)for(const r of painted)ctx.clearRect(...r);
+    const pieces=[[cat.x-66,cat.y-115,132,180]];
+    if(ball.active)pieces.push([ball.x-10,ball.y-10,20,20]);
+    if(pointer.type==="mouse"&&pointer.x>layout.min)pieces.push([mouse.x-25,mouse.y-20,50,35]);
+    if(beam)pieces.push([cat.x-225,cat.y-240,450,450]);
     drawCat();
-    if(!resting&&!motion.matches&&kind==="ball")drawBall();
-    if(!resting&&!motion.matches&&kind==="mouse"&&path.length===0)drawMouse();
+    if(cat.pose!=="sleep"){
+      if(ball.active)drawBall();
+      if(pointer.type==="mouse"&&pointer.x>layout.min&&!pointer.focus)drawMouse();
+      drawPlasma();
+    }
+    drawAffection();painted=pieces;
+    if(petButton){
+      const transform=`translate(${clamp(cat.x-42,0,innerWidth-84)}px,${clamp(cat.y-70,0,innerHeight-80)}px)`;
+      if(petButton.style.transform!==transform)petButton.style.transform=transform;
+    }
   }
   function tick(now){
     raf=0;if(document.hidden)return;
     if(now-last<1000/30){raf=requestAnimationFrame(tick);return;}
     const dt=last?Math.min((now-last)/1000,.05):0;last=now;
-    if(dirty){measure();plan();}
+    if(dirty)measure();
     update(dt);render();
-    const offscreen=layout.compact&&(layout.ground < -60 || layout.ground > innerHeight+60);
-    if(!resting&&!motion.matches&&!offscreen)raf=requestAnimationFrame(tick);
+    if(!motion.matches&&(cat.pose!=="sleep"||performance.now()<petUntil))raf=requestAnimationFrame(tick);
   }
   function wake(){if(!raf){last=0;raf=requestAnimationFrame(tick);}}
+  function track(e) {
+    const now=performance.now(),distance=Math.hypot(e.clientX-pointer.x,e.clientY-pointer.y);
+    pointer.speed=pointer.seen?distance/Math.max((now-pointer.at)/1000,.016):0;
+    if(pointer.speed>1100&&!beam&&!trick&&trickCooldown===0&&!resting&&!motion.matches&&now>=petUntil){
+      trick={kind:"leap",age:0,duration:.7};trickCooldown=2;
+    }
+    pointer.dx=e.clientX-pointer.x;pointer.x=e.clientX;pointer.y=e.clientY;
+    pointer.at=performance.now();pointer.seen=true;pointer.type=e.pointerType||"mouse";
+    pointer.focus=e.target.closest?.(".reactor,.intro .tags,.book-link")||null;
+    if(cat.pose==="sleep")beamWait=Math.max(beamWait,2);
+    if(!resting&&!motion.matches)wake();
+  }
   function rest(){
-    resting=!resting;clearReaction();
+    resting=!resting;beam=null;trick=null;petUntil=0;clearReaction();
     button.setAttribute("aria-pressed",String(resting));
     button.setAttribute("aria-label",resting?"Wake the cat":"Let the cat nap");
     button.title=resting?"Wake the cat":"Let the cat nap";
-    if(resting)canvas.dataset.activity="nap";
-    else {elapsed=0;scene=0;plan();}
+    if(!resting){pointer.at=performance.now();pointer.seen=true;}
     wake();
   }
+  function pet(){
+    petAsleep=cat.pose==="sleep";petUntil=performance.now()+1800;
+    pointer.at=performance.now();beam=null;trick=null;beamWait=Math.max(beamWait,3);
+    clearTimeout(petTimer);petTimer=setTimeout(wake,1850);wake();
+  }
+  petButton?.addEventListener("click",pet);
   button.addEventListener("click",rest);
+  addEventListener("pointermove",track,{passive:true});
   for(const event of ["resize","scroll"])addEventListener(event,()=>{dirty=true;wake();},{passive:true});
-  motion.addEventListener("change",()=>{clearReaction();dirty=true;wake();});
+  motion.addEventListener("change",()=>{beam=null;clearReaction();dirty=true;wake();});
   document.addEventListener("visibilitychange",()=>{
-    if(document.hidden){cancelAnimationFrame(raf);raf=0;last=0;clearReaction();}
+    if(document.hidden){cancelAnimationFrame(raf);raf=0;last=0;beam=null;clearReaction();}
     else wake();
   });
-  // Click an empty side margin to roll the ball; links keep their normal behavior.
   document.addEventListener("pointerup",e=>{
-    if(motion.matches||resting||layout.compact||e.target.closest("a,button,input,select,textarea"))return;
-    if(e.clientX<layout.min-20)return;
-    scene=0;elapsed=0;plan();path=[];
-    ball.x=clamp(e.clientX,layout.min,layout.max);ball.y=Math.min(e.clientY,layout.ground-7);
-    ball.vx=(cat.x-ball.x)*1.4;ball.vy=-100;batted=false;wake();
+    if(e.target.closest("a,button,input,select,textarea"))return;
+    const asleep=cat.pose==="sleep",centerY=cat.y-(asleep?11:29);
+    if(((e.clientX-cat.x)/42)**2+((e.clientY-centerY)/(asleep?23:35))**2<=1){pet();return;}
+    track(e);
+    if(motion.matches||resting||e.clientX<layout.min-20)return;
+    ball.active=true;ball.x=clamp(e.clientX,10,innerWidth-10);ball.y=e.clientY;
+    ball.ground=Math.min(innerHeight-10,e.clientY+12);ball.vx=cat.face*100;ball.vy=-130;wake();
   });
-  measure();plan();button.hidden=false;wake();
+  measure();button.hidden=false;if(petButton)petButton.hidden=false;wake();
 })();
