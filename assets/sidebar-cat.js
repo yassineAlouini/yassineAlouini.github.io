@@ -140,7 +140,7 @@
       if(ball.y>ball.ground-7){ball.y=ball.ground-7;ball.vy=-Math.abs(ball.vy)*.57;if(Math.abs(ball.vy)<10)ball.vy=0;}
       if(ball.x<10||ball.x>innerWidth-10){ball.x=clamp(ball.x,10,innerWidth-10);ball.vx*=-.8;}
     }
-    mouse.x=pointer.x;mouse.y=pointer.y+7;
+    mouse.x=clamp(pointer.x+18,24,innerWidth-24);mouse.y=clamp(pointer.y+10,14,innerHeight-14);
     diagnostics(idle>3.5?"idle":"follow");
   }
 
@@ -356,12 +356,12 @@
     if(painted)for(const r of painted)ctx.clearRect(...r);
     const pieces=[[cat.x-66,cat.y-115,132,180]];
     if(ball.active)pieces.push([ball.x-10,ball.y-10,20,20]);
-    if(pointer.type==="mouse"&&pointer.x>layout.min)pieces.push([mouse.x-25,mouse.y-20,50,35]);
+    if(pointer.type==="mouse")pieces.push([mouse.x-25,mouse.y-20,50,35]);
     if(beam)pieces.push([cat.x-225,cat.y-240,450,450]);
     drawCat();
     if(cat.pose!=="sleep"){
       if(ball.active)drawBall();
-      if(pointer.type==="mouse"&&pointer.x>layout.min&&!pointer.focus)drawMouse();
+      if(pointer.type==="mouse")drawMouse();
       drawPlasma();
     }
     drawAffection();painted=pieces;
@@ -418,7 +418,7 @@
     const asleep=cat.pose==="sleep",centerY=cat.y-(asleep?11:29);
     if(((e.clientX-cat.x)/42)**2+((e.clientY-centerY)/(asleep?23:35))**2<=1){pet();return;}
     track(e);
-    if(motion.matches||resting||e.clientX<layout.min-20)return;
+    if(motion.matches||resting||getSelection()?.isCollapsed===false)return;
     ball.active=true;ball.x=clamp(e.clientX,10,innerWidth-10);ball.y=e.clientY;
     ball.ground=Math.min(innerHeight-10,e.clientY+12);ball.vx=cat.face*100;ball.vy=-130;wake();
   });

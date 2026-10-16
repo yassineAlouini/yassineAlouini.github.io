@@ -97,8 +97,9 @@ Click the cat's body to pet it: it relaxes, purrs visually and shows a small hea
 While the pointer is active, the cat occasionally charges a plasma beam in its
 mouth: a 0.9-second gathering glow and progress ring precede the burst. The beam
 uses the reactor's exact magenta/pink palette and fades over 0.65 seconds. Sleeping and reduced motion suppress the effect.
-Click an empty right margin to roll a ball; a toy mouse follows the pointer in
-the margin. The canvas is decorative and click-through. Reduced motion shows
+Click any empty area to roll the wool ball; a toy mouse follows the pointer
+throughout the page, including over illustrations and links. Link clicks and
+text selection keep their normal behavior. The canvas is decorative and click-through. Reduced motion shows
 a stationary sleeping cat; sleeping and hidden tabs stop the animation loop.
 No network services, sprite downloads or build step are required.
 
