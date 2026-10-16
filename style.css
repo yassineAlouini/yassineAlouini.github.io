@@ -41,20 +41,44 @@ footer{max-width:992px;width:calc(100% - 48px);margin:48px auto 0;padding-top:14
   .resource-links{gap:12px 20px}
 }
 
-/* Front-page fusion reactor. */
-.intro{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:40px;align-items:center;margin-bottom:28px}
+/* Research illustrations sit beside the introduction, with equal visual weight. */
+.intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:32px;
+  align-items:center;margin-bottom:28px}
+.research-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .intro .bio{margin-bottom:0}
-.reactor{width:360px;max-width:100%;margin:0;color:var(--navy)}
+.reactor{width:100%;margin:0;color:var(--navy)}
 .reactor-stage{aspect-ratio:16/11;background:url("assets/fusion-reactor.png") center/100% 100% no-repeat;
   image-rendering:pixelated}
+.matrix-stage{background-image:url("assets/random-matrix.png");image-rendering:auto}
 .reactor img{display:block;width:100%;height:auto;image-rendering:pixelated}
-.reactor figcaption{display:flex;align-items:center;justify-content:space-between;gap:8px;
-  border-top:1px solid #b8c5d2;padding-top:8px;font:10px/1.5 var(--mono);letter-spacing:.02em}
-.reactor-toggle{border:0;padding:4px 0;background:transparent;color:var(--navy);
-  font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.reactor-toggle:hover{color:var(--paper);background:var(--navy)}
-.reactor-toggle:focus-visible{outline:2px solid var(--navy);outline-offset:3px}
-@media(max-width:760px){
+.matrix img{image-rendering:auto}
+.resource-links a{display:inline-flex;align-items:center;gap:8px}
+.resource-icon{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.book-link{display:inline-flex;align-items:center;gap:8px;padding:6px 0;
+  font:19px/1.55 var(--serif);color:var(--link);text-decoration:underline;text-underline-offset:2px}
+.book-link:visited{color:var(--visited)}
+.book-link:hover{background:var(--navy);color:var(--paper);text-decoration:none}
+.book-icon{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:960px){
   .intro{grid-template-columns:minmax(0,1fr);gap:24px}
-  .reactor{margin:0 auto}
+  .research-pair{width:min(100%,480px);margin:0 auto}
 }
+
+/* The visitor is decorative: the canvas never captures links or text selection. */
+#sidebar-cat{position:fixed;inset:0;width:100%;height:100%;z-index:5;pointer-events:none}
+.cat-rest{position:fixed;right:14px;bottom:14px;width:34px;height:34px;z-index:6;
+  border:1px solid #d2d8de;background:var(--paper);color:var(--muted);padding:7px;cursor:pointer}
+.cat-rest[hidden]{display:none}
+.cat-rest svg{width:18px;height:18px;fill:currentColor}
+.cat-rest:hover,.cat-rest[aria-pressed="true"]{color:var(--navy);background:var(--tag-paper)}
+.cat-rest:focus-visible{outline:2px solid var(--navy);outline-offset:3px}
+.cat-curious{filter:drop-shadow(0 0 5px #b69a7070)}
+@media(max-width:1160px){body>footer{margin-top:112px}}
+@media(prefers-reduced-motion:reduce){.cat-curious{filter:none}}
+
+.cat-pet{position:fixed;left:0;top:0;width:84px;height:80px;z-index:6;
+  padding:0;border:0;background:transparent;pointer-events:none;contain:strict}
+.cat-pet[hidden]{display:none}
+.cat-pet:focus-visible{outline:2px dashed var(--tag-line);outline-offset:-4px;border-radius:50%}

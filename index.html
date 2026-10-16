@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Yassine Alouini</title>
 <meta name="description" content="Yassine Alouini — computer vision, multi-modal applications, and LLMs.">
-<link rel="stylesheet" href="style.css?v=shared-navigation-2">
+<link rel="stylesheet" href="style.css?v=playful-cat-2">
 <link rel="stylesheet" href="/assets/site-navigation.css?v=1">
-<script src="assets/fusion-reactor.js" defer></script>
+<script src="assets/fusion-reactor.js?v=2" defer></script>
+<script src="assets/sidebar-cat.js?v=7" defer></script>
 </head>
 <body>
 <header class="site-header">
@@ -27,6 +28,7 @@
   <p class="bio"><strong>Computer vision</strong>, multi-modal applications, and <strong>LLMs</strong>
   for coding &amp; mathematical reasoning.</p>
   </div>
+  <div class="research-pair">
     <figure class="reactor" aria-label="Pixel-art fusion reactor">
       <div class="reactor-stage">
         <picture>
@@ -35,16 +37,28 @@
             alt="A pixel-art stellarator in black, white and grey: a twisted, donut-shaped vessel wrapped in wavy coils, cut open at the front to show glowing pink plasma forming inside.">
         </picture>
       </div>
-      <figcaption><span>MAGNETIC CONFINEMENT <span aria-hidden="true">/</span> 01</span>
-        <button class="reactor-toggle" type="button" aria-controls="fusion-reactor" hidden>Pause animation</button>
-      </figcaption>
+    </figure>
+    <figure class="reactor matrix" aria-label="Random matrix theory and deep learning">
+      <div class="reactor-stage matrix-stage">
+        <picture>
+          <source srcset="assets/random-matrix.gif" media="(prefers-reduced-motion: no-preference)">
+          <img id="random-matrix" src="assets/random-matrix.png" width="768" height="528"
+            alt="A growing symmetric random matrix, a five-layer neural network with branching gold pulses, and an eigenvalue histogram approaching the gold Wigner semicircle curve as matrix size grows from 16 to 512.">
+        </picture>
+      </div>
     </figure>
   </div>
+  </div>
   <nav class="resource-links" aria-label="More links">
-    <a href="https://www.kaggle.com/yassinealouini">Kaggle</a>
-    <a href="https://alouinimohamedyass.gumroad.com/l/computer_vision_with_pytorch">Get the book</a>
+    <a href="https://www.kaggle.com/yassinealouini"><img class="resource-icon" src="assets/kaggle.ico" width="20" height="20" alt="">Kaggle</a>
+    <a class="book-link" href="https://alouinimohamedyass.gumroad.com/l/computer_vision_with_pytorch"><svg class="book-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 6C9 3 5 3 2 4v15c4-1 7-1 10 2 3-3 6-3 10-2V4c-3-1-7-1-10 2Zm0 0v15M5 8c2 0 3 0 4 1M5 12c2 0 3 0 4 1M15 9c1-1 2-1 4-1M15 13c1-1 2-1 4-1"/></svg>Get the book</a>
   </nav>
 </main>
 <footer>Website generated with assistance from AI agents</footer>
+<canvas id="sidebar-cat" aria-hidden="true"></canvas>
+<button class="cat-pet" type="button" aria-label="Pet the cat" hidden></button>
+<button class="cat-rest" type="button" aria-label="Let the cat nap" aria-pressed="false" title="Let the cat nap" hidden>
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><ellipse cx="7" cy="7" rx="2" ry="3"/><ellipse cx="17" cy="7" rx="2" ry="3"/><ellipse cx="3" cy="12" rx="2" ry="2.5"/><ellipse cx="21" cy="12" rx="2" ry="2.5"/><path d="M5 19c0-3 4-8 7-8s7 5 7 8c0 4-5 1-7 1s-7 3-7-1Z"/></svg>
+</button>
 </body>
 </html>
