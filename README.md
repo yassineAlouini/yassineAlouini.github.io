@@ -11,12 +11,23 @@ The blog (notebooks & research) lives in a separate repo and is linked from here
 The theme matches the blog: system serif fonts, white background, navy headings
 and rules, and muted ochre tags. No build step or external fonts are needed.
 
-The front page includes a looping pixel-art stellarator GIF, moved from the blog.
+The front page pairs two 360px-wide pixel-art animations below the introduction: a
+stellarator and a random-matrix / neural-network illustration. They sit side by
+side on desktop and stack on narrow screens. Each has independent playback controls.
+
+The stellarator GIF was moved from the blog.
 The machine is monochrome with colored plasma. Playback controls select a still
 when paused or offscreen; reduced-motion preferences also work without JavaScript.
 The GIF, still, and playback controls live in `assets/`. To regenerate the images,
 run `python3 code/render-fusion-reactor.py` with Pillow, Playwright, and its Chromium
 browser installed. Serving the site does not require these tools.
+
+Regenerate the larger RMT animation with `python3 code/render-random-matrix.py`.
+It adapts the blog's Research icon into a 384×264 GIF and still, using crisp 4×
+pixel scaling and the same 16:11 stage as the reactor. A seeded 12×12 Gaussian
+matrix gains a rank-one component; the blue histogram shows the other WᵀW
+eigenvalues and the gold marker tracks the largest one. The neural network is
+schematic, not a trained model. Its renderer and assets are local to this repo.
 
 Preview locally with `python3 code/serve.py`. This serves the homepage and
 sketchbook, and maps `/blog/` to the adjacent `../blog` repository, including its
