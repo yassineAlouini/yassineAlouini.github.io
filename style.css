@@ -49,10 +49,9 @@ footer{max-width:992px;width:calc(100% - 48px);margin:48px auto 0;padding-top:14
 .reactor{width:100%;margin:0;color:var(--navy)}
 .reactor-stage{aspect-ratio:16/11;background:url("assets/fusion-reactor.png") center/100% 100% no-repeat;
   image-rendering:pixelated}
-.matrix-stage{background-image:url("assets/random-matrix.png")}
+.matrix-stage{background-image:url("assets/random-matrix.png");image-rendering:auto}
 .reactor img{display:block;width:100%;height:auto;image-rendering:pixelated}
-.reactor figcaption{border-top:1px solid #b8c5d2;padding-top:8px;
-  font:9px/1.5 var(--mono);letter-spacing:.02em}
+.matrix img{image-rendering:auto}
 .resource-links a{display:inline-flex;align-items:center;gap:8px}
 .resource-icon{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;
   stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}

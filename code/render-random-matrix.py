@@ -33,9 +33,13 @@ def main():
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()
-        page.set_content('<canvas width="192" height="132"></canvas>')
+        page.set_content('<canvas width="768" height="528"></canvas>')
         page.add_script_tag(path=str(ROOT / "code/random-matrix-renderer.js"))
         colors = page.evaluate("window.MATRIX_PALETTE")
+        # Preserve antialiased text: add intermediate navy/white shades.
+        navy = np.array([25,54,83])
+        colors += ["#"+"".join(f"{c:02x}" for c in np.rint(navy+(255-navy)*t).astype(int))
+                   for t in np.linspace(0,1,64)]
         rgb = [int(c[i:i+2],16) for c in colors for i in (1,3,5)]
         palette = Image.new("P", (1,1))
         palette.putpalette(rgb + rgb[:3] * (256-len(colors)))
@@ -47,14 +51,14 @@ def main():
                 return document.querySelector('canvas').toDataURL().split(',')[1];
             }""", [index/FRAME_COUNT, stages[stage]])
             native = Image.open(io.BytesIO(base64.b64decode(data))).convert("RGB")
-            frame = native.resize((384,264), Image.Resampling.NEAREST)
+            frame = native
             frames.append(frame.quantize(palette=palette,dither=Image.Dither.NONE))
         browser.close()
     frames[60].save(ROOT / "assets/random-matrix.png")
     output = ROOT / "assets/random-matrix.gif"
     frames[0].save(output, save_all=True, append_images=frames[1:],
                    duration=100, loop=0, optimize=True, disposal=1)
-    print(f"Wrote {output}: 384×264, 7.2 seconds, {output.stat().st_size:,} bytes")
+    print(f"Wrote {output}: 768×528, 7.2 seconds, {output.stat().st_size:,} bytes")
 
 if __name__ == "__main__":
     main()

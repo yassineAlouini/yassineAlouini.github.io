@@ -17,12 +17,15 @@ about 212px each on desktop; on narrower screens the pair sits below the text.
 Reduced-motion preferences select stills, including without JavaScript; animations
 also stop when offscreen or when the tab is hidden. There are no pause buttons.
 Kaggle and the book link have small inline SVG icons that inherit the link color.
+The illustrations have no visible titles or captions. RMT labels render at 4×
+resolution with antialiased text and smooth browser downscaling; the drawing keeps
+its pixel geometry.
 
 The stellarator is monochrome with colored plasma. Regenerate it with
 `python3 code/render-fusion-reactor.py` (Pillow, Playwright and Chromium).
 
 Regenerate the RMT GIF and still with `python3 code/render-random-matrix.py`
-(NumPy, Pillow, Playwright and Chromium). The 384×264 GIF shows a larger matrix,
+(NumPy, Pillow, Playwright and Chromium). The 768×528 GIF shows a larger matrix,
 a five-layer schematic network with branching pulses and a residual connection,
 and a density-normalized histogram approaching the Wigner semicircle. Nine seeded
 symmetric Gaussian matrices grow from N=16 to N=512, with off-diagonal variance

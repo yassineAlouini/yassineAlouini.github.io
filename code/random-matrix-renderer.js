@@ -10,10 +10,11 @@
     for(let i=0;i<=n;i++) { const t=n?i/n:0; rect(x+(X-x)*t,y+(Y-y)*t,1,1,c); }
   }
   function label(text,x,y,c=3) {
-    ctx.fillStyle=C[c]; ctx.font="8px monospace"; ctx.fillText(text,x,y);
+    ctx.fillStyle=C[c]; ctx.font="9px 'Courier New', monospace"; ctx.fillText(text,x,y);
   }
   window.MATRIX_PALETTE=C;
   window.drawRandomMatrix=(t,data)=>{
+    ctx.setTransform(4,0,0,4,0,0);
     rect(0,0,192,132,0);
     // Enlarging corner of the symmetric matrix; N labels the full matrix size.
     const cells=Math.min(12,4+2*data.stage), gap=5, side=cells*gap;
@@ -53,7 +54,6 @@
     // A returning gradient pulse uses the residual connection.
     const back=(1-(t*3)%1);
     rect(116+42*back,4,3,3,6);
-    label("DEEP SIGNALS",107,81,4);
 
     // Density-normalized histogram of actual eigenvalues, on a fixed [-2.4,2.4] axis.
     const x0=17,width=158,base=119,scale=91;
