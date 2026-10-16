@@ -93,3 +93,9 @@ Check the cat's full routine, click-through behavior, real link navigation, nap
 control, responsive layout and reduced motion with
 `python3 code/check-sidebar-cat.py http://localhost:8770` against a running preview.
 The check uses a controlled browser clock and requires Chromium and Firefox.
+
+The cat follows sampled Bezier routes through the margin, steers with velocity
+easing, and turns gradually. Its short fur-covered legs plant and lift broad paws using a
+distance-driven trot; rounded haunches conceal the rear leg bends. Expressions evolve with the activities: curious, playful,
+mischievous, delighted, focused, puzzled, surprised, content and sleepy. Eyes,
+pupils, eyebrows, head tilt, mouth and tail contribute to the expression.

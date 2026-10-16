@@ -24,13 +24,31 @@ def main():
         canvas = page.locator('#sidebar-cat')
         assert canvas.get_attribute('aria-hidden') == 'true'
         assert canvas.evaluate("e => getComputedStyle(e).pointerEvents") == 'none'
+        # Sample the first transitions to catch teleports or rigid axis-only paths.
+        page.evaluate("""() => {
+            window.catTrace=[];
+            function record() {
+                const e=document.querySelector('#sidebar-cat');
+                if(e.dataset.x && e.dataset.activity==='reactor')catTrace.push([Number(e.dataset.x),Number(e.dataset.y)]);
+                if(catTrace.length<500)requestAnimationFrame(record);
+            }
+            requestAnimationFrame(record);
+        }""")
+        emotions=set()
         # Exercise every autonomous scene with a controlled animation clock.
         scenes = [('ball',3000),('reactor',10000),('mouse',11000),('sections',10000),
                   ('matrix',10000),('book',8000),('groom',8000),('nap',7000)]
         for scene, elapsed in scenes:
             page.clock.run_for(elapsed)
             assert canvas.get_attribute('data-activity') == scene, scene
-            print(f'{scene}: autonomous routine reached', flush=True)
+            emotions.add(canvas.get_attribute('data-emotion'))
+            print(f'{scene}: autonomous routine reached ({canvas.get_attribute("data-emotion")})', flush=True)
+        assert len(emotions)>=4, emotions
+        trace=page.evaluate('catTrace')
+        deltas=[(abs(b[0]-a[0]),abs(b[1]-a[1])) for a,b in zip(trace,trace[1:])]
+        assert sum(dx>.1 and dy>.1 for dx,dy in deltas)>15
+        assert all((dx*dx+dy*dy)**.5<20 for dx,dy in deltas), 'Abrupt motion jump'
+        print('Curved continuous motion and changing emotions checked',flush=True)
         # The rest button actually stops canvas updates, then resumes play.
         button = page.locator('.cat-rest')
         button.click()
