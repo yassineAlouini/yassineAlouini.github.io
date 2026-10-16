@@ -61,9 +61,15 @@
   }
   function clearReaction() { if(reaction){reaction.classList.remove("cat-curious");reaction=null;} }
   function react(element) { if(reaction!==element){clearReaction();reaction=element;reaction?.classList.add("cat-curious");} }
+  function chargeScale() {
+    if(!beam)return 1;
+    const progress=clamp(beam.age/(beam.stage==="charge"?.9:.65),0,1);
+    const eased=progress*progress*(3-2*progress);
+    return 1+.45*(beam.stage==="charge"?eased:1-eased);
+  }
   function mouthPosition() {
-    const face=cat.turn<0?-1:1,scale=(.88+.12*Math.abs(cat.turn))*2;
-    return {x:cat.x+3*face*scale,y:cat.y-32};
+    const power=chargeScale(),face=cat.turn<0?-1:1,scale=(.88+.12*Math.abs(cat.turn))*2*power;
+    return {x:cat.x+3*face*scale,y:cat.y-32*power};
   }
   function move(target,dt,speed=190) {
     const dx=target.x-cat.x,dy=target.y-cat.y,d=Math.hypot(dx,dy);
@@ -157,7 +163,8 @@
     ctx.save();ctx.translate(cat.x,cat.y);
     oval(0,1,sleeping?28:25,3,"shadow");
     const turningWidth=.88+.12*Math.abs(cat.turn);
-    ctx.scale((cat.turn<0?-1:1)*turningWidth*2,2);ctx.translate(0,-hop/2);
+    const power=chargeScale();
+    ctx.scale((cat.turn<0?-1:1)*turningWidth*2*power,2*power);ctx.translate(0,-hop/2);
     if(pose==="roll"&&trick){
       const progress=trick.age/trick.duration;
       const smooth=x=>x*x*(3-2*x);
@@ -354,7 +361,8 @@
     if(!layout)return;
     // Clear only previously painted pieces, not a viewport-sized rectangle.
     if(painted)for(const r of painted)ctx.clearRect(...r);
-    const pieces=[[cat.x-66,cat.y-115,132,180]];
+    const power=chargeScale();
+    const pieces=[[cat.x-66*power,cat.y-115*power,132*power,180*power]];
     if(ball.active)pieces.push([ball.x-10,ball.y-10,20,20]);
     if(pointer.type==="mouse")pieces.push([mouse.x-25,mouse.y-20,50,35]);
     if(beam)pieces.push([cat.x-225,cat.y-240,450,450]);
@@ -415,8 +423,8 @@
   });
   document.addEventListener("pointerup",e=>{
     if(e.target.closest("a,button,input,select,textarea"))return;
-    const asleep=cat.pose==="sleep",centerY=cat.y-(asleep?11:29);
-    if(((e.clientX-cat.x)/42)**2+((e.clientY-centerY)/(asleep?23:35))**2<=1){pet();return;}
+    const asleep=cat.pose==="sleep";
+    if(((e.clientX-cat.x)/(42*chargeScale()))**2+((e.clientY-(cat.y-(asleep?11:29)*chargeScale()))/((asleep?23:35)*chargeScale()))**2<=1){pet();return;}
     track(e);
     if(motion.matches||resting||getSelection()?.isCollapsed===false)return;
     ball.active=true;ball.x=clamp(e.clientX,10,innerWidth-10);ball.y=e.clientY;

@@ -95,7 +95,9 @@ Click the cat's body to pet it: it relaxes, purrs visually and shows a small hea
 “Pet the cat” is also a keyboard-accessible button; page links remain click-through.
 
 While the pointer is active, the cat occasionally charges a plasma beam in its
-mouth: a 0.9-second gathering glow and progress ring precede the burst. The beam
+mouth: a 0.9-second gathering glow and progress ring precede the burst. The cat
+smoothly grows to 145% size during charging and settles back as the beam fades;
+the beam origin and repaint bounds follow the growing body. The beam
 uses the reactor's exact magenta/pink palette and fades over 0.65 seconds. Sleeping and reduced motion suppress the effect.
 Click any empty area to roll the wool ball; a toy mouse follows the pointer
 throughout the page, including over illustrations and links. Link clicks and
