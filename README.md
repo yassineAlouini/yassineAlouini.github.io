@@ -80,7 +80,7 @@ no-store` for HTML and assets. Navigation checks simulate an old cached layout
 stylesheet as well as comparing fresh pages.
 
 
-A small tabby visits the homepage margins (`assets/sidebar-cat.js`). Its repeating
+A small fluffy tabby visits the homepage margins (`assets/sidebar-cat.js`). Its repeating
 routine bats a bouncing ball, investigates the reactor and matrix, chases a
 stitched wind-up mouse, reaches for the focus tags and book link, grooms and naps.
 Anchors follow the live layout and scrolling; compact layouts keep play in a

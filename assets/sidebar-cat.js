@@ -117,53 +117,83 @@
     const pose=cat.pose, sleeping=pose==="sleep", sit=["sit","paw","groom","startled"].includes(pose);
     const gait=cat.moving?Math.sin(time*19):0;
     const hop=pose==="pounce"?Math.abs(Math.sin(time*8))*9:pose==="startled"?7:cat.moving?Math.abs(gait)*1.5:0;
+    function oval(x,y,rx,ry,c){ctx.fillStyle=color[c];ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill();}
+    function soft(points,c,width){ctx.lineCap="round";ctx.lineJoin="round";stroke(points,c,width);}
     ctx.save();ctx.translate(Math.round(cat.x),Math.round(cat.y));
-    ctx.fillStyle=color.shadow;ctx.beginPath();ctx.ellipse(0,1,sleeping?26:23,3,0,0,Math.PI*2);ctx.fill();
+    oval(0,1,sleeping?28:25,3,"shadow");
     ctx.scale(cat.face*2,2);ctx.translate(0,-hop/2);
     if(sleeping){
-      // A curled loaf: tail wrapped across the paws, one tiny sleeping ear.
-      box(-12,-8,22,7,"ink");box(-10,-10,16,10,"ink");box(-10,-8,17,7,"fur");
-      box(4,-10,8,8,"ink");polygon([[4,-10],[4,-14],[8,-10]],"ink");
-      box(5,-9,6,5,"light");stroke([[6,-7],[9,-7]],"ink");
-      stroke([[-9,-4],[-3,-1],[5,-2],[8,-4]],"light",2);
+      // A round ball of fluff, with the tail tucked around a sleepy cheek.
+      oval(-1,-6,14,8,"ink");oval(-1,-6.5,13,7,"fur");
+      oval(-2,-7,9,5,"light");
+      polygon([[5,-11],[5,-17],[10,-12],[14,-14],[14,-8]],"ink");
+      oval(8,-9,7,6,"ink");oval(8,-9,6,5,"fur");
+      oval(10,-7,4,2.5,"white");soft([[7,-9],[10,-9]],"ink",.8);
+      oval(12,-7.5,1,.7,"pink");
+      soft([[-11,-8],[-13,-4],[-8,-1],[0,0],[5,-2]],"ink",6);
+      soft([[-11,-8],[-12,-4],[-8,-2],[0,-1],[5,-3]],"fur",4);
+      soft([[-10,-6],[-10,-4]],"light",1.4);
       ctx.restore();
-      if(!motion.matches){ctx.fillStyle=color.fur;ctx.font="11px Georgia,serif";ctx.fillText("z",cat.x+18,cat.y-22-Math.sin(time)*3);}
+      if(!motion.matches){ctx.fillStyle=color.fur;ctx.font="11px Georgia,serif";ctx.fillText("z",cat.x+22,cat.y-24-Math.sin(time)*3);}
       return;
     }
-    // Tail curls independently from the stride.
-    const wag=Math.round(Math.sin(time*3)*3);
-    stroke([[-9,-6],[-15,-7],[-17,-12],[-16,-17+wag],[-12,-18+wag]],"ink",4);
-    stroke([[-10,-6],[-15,-8],[-16,-12],[-15,-16+wag],[-12,-17+wag]],"fur",2);
+    // A thick, softly curling tail with a pale fluffy tip.
+    const wag=Math.sin(time*3)*2;
+    ctx.lineCap="round";ctx.lineJoin="round";
+    const tail=c=>{ctx.beginPath();ctx.moveTo(-9,-6);ctx.bezierCurveTo(-23,-3,-25,-16+wag,-18,-20+wag);ctx.bezierCurveTo(-15,-22+wag,-12,-20+wag,-13,-18+wag);ctx.strokeStyle=color[c];ctx.stroke();};
+    ctx.lineWidth=8;tail("ink");ctx.lineWidth=6;tail("fur");
+    soft([[-18,-20+wag],[-15,-21+wag],[-13,-20+wag]],"light",4);
     if(sit){
-      polygon([[-7,-14],[3,-15],[8,-7],[7,0],[-10,0],[-11,-5]],"ink");
-      polygon([[-6,-13],[2,-13],[6,-6],[5,-1],[-8,-1],[-9,-5]],"fur");
-      box(2,-11,3,10,"light");box(-9,-1,7,2,"ink");box(1,-1,7,2,"ink");
+      oval(-2,-8,11,10,"ink");oval(-2,-8.5,10,9,"fur");
+      oval(1,-7,6.5,8,"light");oval(2,-6,4.5,7,"white");
+      // Small scallops break the silhouette into soft fur rather than hard corners.
+      oval(-10,-6,3,3,"fur");oval(-8,-2,4,2,"fur");
+      for(const x of [-7,4]){oval(x,0,4,2,"ink");oval(x,-.5,3.2,1.4,"white");}
+      soft([[-9,-12],[-6,-11]],"ink",1.2);
     }else{
-      box(-12,-12,22,9,"ink");box(-11,-13,17,10,"fur");box(-8,-4,15,2,"light");
-      for(const [x,offset] of [[-10,0],[-6,Math.PI],[4,Math.PI],[8,0]]){
-        const step=cat.moving?Math.round(Math.sin(time*19+offset)*3):0;
-        box(x+step,-4,3,5,"ink");box(x+step,0,4,1,"white");
+      oval(-2,-9,14,8,"ink");oval(-2,-9.5,13,7,"fur");
+      oval(-1,-5.5,9,3.5,"light");
+      for(const [x,offset] of [[-11,0],[-6,Math.PI],[4,Math.PI],[9,0]]){
+        const step=cat.moving?Math.sin(time*19+offset)*3:0;
+        soft([[x,-5],[x+step,-.5]],"ink",4);
+        oval(x+step,.2,3,1.6,"ink");oval(x+step,-.1,2.2,1.1,"white");
       }
-      box(-7,-13,2,4,"ink");box(-2,-13,2,3,"ink");
+      soft([[-8,-14],[-7,-11]],"ink",1.5);soft([[-3,-15],[-2,-12]],"ink",1.4);
     }
-    // Large pointed ears, tabby stripes, white cheeks and a pink nose.
-    const hx=sit?3:9,hy=sit?-19:-17;
-    polygon([[hx-7,hy+4],[hx-7,hy-8],[hx-2,hy-5],[hx+3,hy-5],[hx+7,hy-9],[hx+8,hy+4],[hx+4,hy+8],[hx-3,hy+8]],"ink");
-    polygon([[hx-5,hy+3],[hx-5,hy-4],[hx-1,hy-2],[hx+4,hy-3],[hx+5,hy-5],[hx+6,hy+3],[hx+3,hy+6],[hx-2,hy+6]],"fur");
-    polygon([[hx-5,hy-5],[hx-5,hy-1],[hx-2,hy-2]],"pink");polygon([[hx+4,hy-3],[hx+6,hy-6],[hx+6,hy-1]],"pink");
-    box(hx-1,hy-3,1,3,"ink");box(hx+2,hy-3,1,2,"ink");box(hx-4,hy+3,9,3,"white");
-    if(pose==="groom"||Math.floor(time*3)%19===0){box(hx-4,hy,2,1,"ink");box(hx+3,hy,2,1,"ink");}
-    else{box(hx-4,hy-1,2,3,"ink");box(hx+3,hy-1,2,3,"ink");box(hx-4,hy-1,1,1,"gold");box(hx+3,hy-1,1,1,"gold");}
-    box(hx,hy+3,2,1,"pink");box(hx+1,hy+4,1,2,"ink");
-    stroke([[hx-7,hy+2],[hx-3,hy+3]],"ink");stroke([[hx+5,hy+3],[hx+9,hy+2]],"ink");
+    const hx=sit?3:9,hy=sit?-21:-19;
+    // Short rounded ears, wide cheeks, a soft chin and a little cream neck ruff.
+    polygon([[hx-8,hy-2],[hx-8,hy-10],[hx-6,hy-11],[hx-1,hy-6],[hx+4,hy-7],[hx+8,hy-11],[hx+10,hy-9],[hx+9,hy]],"ink");
+    polygon([[hx-6,hy-3],[hx-6,hy-8],[hx-2,hy-5]],"pink");
+    polygon([[hx+5,hy-5],[hx+8,hy-8],[hx+8,hy-2]],"pink");
+    oval(hx,hy,10,8.5,"ink");oval(hx,hy-.5,9,7.5,"fur");
+    oval(hx-8,hy+2,3,3.5,"fur");oval(hx+8,hy+2,3,3.5,"fur");
+    oval(hx,hy+6,6,3,"light");
+    polygon([[hx-5,hy+5],[hx-4,hy+10],[hx-1,hy+8],[hx+1,hy+11],[hx+4,hy+8],[hx+5,hy+5]],"white");
+    oval(hx-3,hy+3,3.8,2.7,"white");oval(hx+3,hy+3,3.8,2.7,"white");
+    for(const [dx,dy] of [[-3,-5],[0,-6],[3,-5]])soft([[hx+dx,hy+dy],[hx+dx*.7,hy+dy+2]],"ink",1.2);
+    if(pose==="groom"||Math.floor(time*3)%19===0){
+      soft([[hx-6,hy],[hx-3,hy+.5]],"ink",1);soft([[hx+3,hy+.5],[hx+6,hy]],"ink",1);
+    }else{
+      for(const dx of [-4,4]){
+        oval(hx+dx,hy-.5,1.8,2.3,"ink");oval(hx+dx-.3,hy-.5,.8,1.3,"gold");
+        oval(hx+dx-.5,hy-1.4,.65,.65,"white");
+      }
+    }
+    polygon([[hx-1.5,hy+2],[hx+1.5,hy+2],[hx,hy+3.5]],"pink");
+    soft([[hx,hy+3.5],[hx,hy+4.7],[hx-1.5,hy+5.2]],"ink",.65);
+    soft([[hx,hy+4.7],[hx+1.5,hy+5.2]],"ink",.65);
+    for(const side of [-1,1]){
+      soft([[hx+side*6,hy+2.5],[hx+side*12,hy+1.5]],"ink",.6);
+      soft([[hx+side*6,hy+4],[hx+side*11,hy+5]],"ink",.6);
+    }
     if(["paw","groom","startled"].includes(pose)){
       const reach=pose==="paw"?6:pose==="groom"?0:3;
-      stroke([[4,-8],[9,-11],[11+reach,-13]],"ink",4);
-      stroke([[4,-8],[9,-11],[11+reach,-13]],"light",2);
-      box(11+reach,-14,3,2,"white");
+      soft([[4,-8],[9,-10],[11+reach,-12]],"ink",5);
+      soft([[4,-8],[9,-10],[11+reach,-12]],"light",3);
+      oval(12+reach,-12,3,2.5,"ink");oval(12+reach,-12.3,2.2,1.7,"white");
     }
     ctx.restore();
-    if(pose==="startled"){ctx.fillStyle=color.gold;ctx.font="18px Georgia,serif";ctx.fillText("!",cat.x+cat.face*20,cat.y-57);}
+    if(pose==="startled"){ctx.fillStyle=color.gold;ctx.font="18px Georgia,serif";ctx.fillText("!",cat.x+cat.face*23,cat.y-62);}
   }
   function drawBall(){
     ctx.save();ctx.translate(Math.round(ball.x),Math.round(ball.y));ctx.rotate(ball.angle*.15);
