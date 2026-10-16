@@ -16,7 +16,10 @@ a stellarator and a random-matrix / deep-learning illustration. They display at
 about 212px each on desktop; on narrower screens the pair sits below the text.
 Reduced-motion preferences select stills, including without JavaScript; animations
 also stop when offscreen or when the tab is hidden. There are no pause buttons.
-Kaggle and the book link have small inline SVG icons that inherit the link color.
+Kaggle uses the unmodified official favicon saved from
+<https://www.kaggle.com/static/images/favicon-new.ico> (retrieved 16 October 2026)
+at `assets/kaggle.ico`. The book link shares its open-book SVG, wording, URL and
+plain-link styling with the blog's “Get the book” link.
 The illustrations have no visible titles or captions. RMT labels render at 4×
 resolution with antialiased text and smooth browser downscaling; the drawing keeps
 its pixel geometry.

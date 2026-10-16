@@ -55,6 +55,12 @@ footer{max-width:992px;width:calc(100% - 48px);margin:48px auto 0;padding-top:14
 .resource-links a{display:inline-flex;align-items:center;gap:8px}
 .resource-icon{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;
   stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.book-link{display:inline-flex;align-items:center;gap:8px;padding:6px 0;
+  font:19px/1.55 var(--serif);color:var(--link);text-decoration:underline;text-underline-offset:2px}
+.book-link:visited{color:var(--visited)}
+.book-link:hover{background:var(--navy);color:var(--paper);text-decoration:none}
+.book-icon{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 @media(max-width:960px){
   .intro{grid-template-columns:minmax(0,1fr);gap:24px}
   .research-pair{width:min(100%,480px);margin:0 auto}
