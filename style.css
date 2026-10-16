@@ -65,3 +65,20 @@ footer{max-width:992px;width:calc(100% - 48px);margin:48px auto 0;padding-top:14
   .intro{grid-template-columns:minmax(0,1fr);gap:24px}
   .research-pair{width:min(100%,480px);margin:0 auto}
 }
+
+/* The visitor is decorative: the canvas never captures links or text selection. */
+#sidebar-cat{position:fixed;inset:0;width:100%;height:100%;z-index:5;pointer-events:none}
+.cat-rest{position:fixed;right:14px;bottom:14px;width:34px;height:34px;z-index:6;
+  border:1px solid #d2d8de;background:var(--paper);color:var(--muted);padding:7px;cursor:pointer}
+.cat-rest[hidden]{display:none}
+.cat-rest svg{width:18px;height:18px;fill:currentColor}
+.cat-rest:hover,.cat-rest[aria-pressed="true"]{color:var(--navy);background:var(--tag-paper)}
+.cat-rest:focus-visible{outline:2px solid var(--navy);outline-offset:3px}
+.cat-curious{filter:drop-shadow(0 0 5px #b69a7070)}
+@media(max-width:1160px){body>footer{margin-top:112px}}
+@media(prefers-reduced-motion:reduce){.cat-curious{filter:none}}
+
+.cat-pet{position:fixed;left:0;top:0;width:84px;height:80px;z-index:6;
+  padding:0;border:0;background:transparent;pointer-events:none;contain:strict}
+.cat-pet[hidden]{display:none}
+.cat-pet:focus-visible{outline:2px dashed var(--tag-line);outline-offset:-4px;border-radius:50%}
