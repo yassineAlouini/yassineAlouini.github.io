@@ -11,23 +11,27 @@ The blog (notebooks & research) lives in a separate repo and is linked from here
 The theme matches the blog: system serif fonts, white background, navy headings
 and rules, and muted ochre tags. No build step or external fonts are needed.
 
-The front page pairs two 360px-wide pixel-art animations below the introduction: a
-stellarator and a random-matrix / neural-network illustration. They sit side by
-side on desktop and stack on narrow screens. Each has independent playback controls.
+The front page pairs two compact pixel-art animations beside the introduction:
+a stellarator and a random-matrix / deep-learning illustration. They display at
+about 212px each on desktop; on narrower screens the pair sits below the text.
+Reduced-motion preferences select stills, including without JavaScript; animations
+also stop when offscreen or when the tab is hidden. There are no pause buttons.
+Kaggle and the book link have small inline SVG icons that inherit the link color.
 
-The stellarator GIF was moved from the blog.
-The machine is monochrome with colored plasma. Playback controls select a still
-when paused or offscreen; reduced-motion preferences also work without JavaScript.
-The GIF, still, and playback controls live in `assets/`. To regenerate the images,
-run `python3 code/render-fusion-reactor.py` with Pillow, Playwright, and its Chromium
-browser installed. Serving the site does not require these tools.
+The stellarator is monochrome with colored plasma. Regenerate it with
+`python3 code/render-fusion-reactor.py` (Pillow, Playwright and Chromium).
 
-Regenerate the larger RMT animation with `python3 code/render-random-matrix.py`.
-It adapts the blog's Research icon into a 384×264 GIF and still, using crisp 4×
-pixel scaling and the same 16:11 stage as the reactor. A seeded 12×12 Gaussian
-matrix gains a rank-one component; the blue histogram shows the other WᵀW
-eigenvalues and the gold marker tracks the largest one. The neural network is
-schematic, not a trained model. Its renderer and assets are local to this repo.
+Regenerate the RMT GIF and still with `python3 code/render-random-matrix.py`
+(NumPy, Pillow, Playwright and Chromium). The 384×264 GIF shows a larger matrix,
+a five-layer schematic network with branching pulses and a residual connection,
+and a density-normalized histogram approaching the Wigner semicircle. Nine seeded
+symmetric Gaussian matrices grow from N=16 to N=512, with off-diagonal variance
+1/N: W=(G+Gᵀ)/√(2N). NumPy computes the eigenvalues; a fixed gold curve overlays
+ρ(λ)=√(4−λ²)/(2π) on [−2,2]. A growing upper-left crop represents the matrix.
+The histogram holds at N=512 before the experiment restarts. The network is an
+illustration, not a claim that arbitrary neural weights follow this law.
+See [these random-matrix lecture notes](https://wwwteor.mi.infn.it/~molinari/RMT/RM_LESSON_1.pdf)
+for the normalization and semicircle law. Serving the site needs no authoring tools.
 
 Preview locally with `python3 code/serve.py`. This serves the homepage and
 sketchbook, and maps `/blog/` to the adjacent `../blog` repository, including its

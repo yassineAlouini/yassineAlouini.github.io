@@ -41,22 +41,22 @@ footer{max-width:992px;width:calc(100% - 48px);margin:48px auto 0;padding-top:14
   .resource-links{gap:12px 20px}
 }
 
-/* Paired front-page research illustrations. */
-.intro{margin-bottom:28px}
-.research-pair{display:grid;grid-template-columns:repeat(2,minmax(0,360px));justify-content:center;gap:40px;margin-top:28px}
+/* Research illustrations sit beside the introduction, with equal visual weight. */
+.intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:32px;
+  align-items:center;margin-bottom:28px}
+.research-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .intro .bio{margin-bottom:0}
-.reactor{width:360px;max-width:100%;margin:0;color:var(--navy)}
+.reactor{width:100%;margin:0;color:var(--navy)}
 .reactor-stage{aspect-ratio:16/11;background:url("assets/fusion-reactor.png") center/100% 100% no-repeat;
   image-rendering:pixelated}
 .matrix-stage{background-image:url("assets/random-matrix.png")}
 .reactor img{display:block;width:100%;height:auto;image-rendering:pixelated}
-.reactor figcaption{display:flex;align-items:center;justify-content:space-between;gap:8px;
-  border-top:1px solid #b8c5d2;padding-top:8px;font:10px/1.5 var(--mono);letter-spacing:.02em}
-.reactor-toggle{border:0;padding:4px 0;background:transparent;color:var(--navy);
-  font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.reactor-toggle:hover{color:var(--paper);background:var(--navy)}
-.reactor-toggle:focus-visible{outline:2px solid var(--navy);outline-offset:3px}
-@media(max-width:760px){
-  .research-pair{grid-template-columns:minmax(0,360px);gap:24px}
-  .reactor{margin:0 auto}
+.reactor figcaption{border-top:1px solid #b8c5d2;padding-top:8px;
+  font:9px/1.5 var(--mono);letter-spacing:.02em}
+.resource-links a{display:inline-flex;align-items:center;gap:8px}
+.resource-icon{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:960px){
+  .intro{grid-template-columns:minmax(0,1fr);gap:24px}
+  .research-pair{width:min(100%,480px);margin:0 auto}
 }
