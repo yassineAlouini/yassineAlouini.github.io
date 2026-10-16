@@ -4,11 +4,15 @@
   "use strict";
   const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
   document.querySelectorAll(".reactor").forEach(figure => {
-    const image = figure.querySelector("img"), source = figure.querySelector("source");
-    if (!image || !source) return;
+    const image = figure.querySelector("img"), sources = [...figure.querySelectorAll("source")];
+    if (!image || !sources.length) return;
     let visible = true;
     function sync() {
-      source.media = !motion.matches && visible && !document.hidden ? "all" : "not all";
+      const media = !motion.matches && visible && !document.hidden
+        ? "(prefers-reduced-motion: no-preference)" : "not all";
+      // Keep every animated format in sync. Avoid re-selecting an already
+      // selected image at startup, which can issue a duplicate request.
+      for (const source of sources) if (source.media !== media) source.media = media;
     }
     motion.addEventListener("change", sync);
     document.addEventListener("visibilitychange", sync);

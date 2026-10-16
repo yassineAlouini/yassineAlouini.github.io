@@ -18,7 +18,8 @@ Reduced-motion preferences select stills, including without JavaScript; animatio
 also stop when offscreen or when the tab is hidden. There are no pause buttons.
 Kaggle uses the unmodified official favicon saved from
 <https://www.kaggle.com/static/images/favicon-new.ico> (retrieved 16 October 2026)
-at `assets/kaggle.ico`. The book link shares its open-book SVG, wording, URL and
+at `assets/kaggle.ico`; the page serves a smaller PNG containing the same official
+pixels. The book link shares its open-book SVG, wording, URL and
 plain-link styling with the blog's “Get the book” link.
 The illustrations have no visible titles or captions. RMT labels render at 4×
 resolution with antialiased text and smooth browser downscaling; the drawing keeps
@@ -38,6 +39,21 @@ The histogram holds at N=512 before the experiment restarts. The network is an
 illustration, not a claim that arbitrary neural weights follow this law.
 See [these random-matrix lecture notes](https://wwwteor.mi.infn.it/~molinari/RMT/RM_LESSON_1.pdf)
 for the normalization and semicircle law. Serving the site needs no authoring tools.
+
+After regenerating the RMT GIF, run `python3 code/export-web-assets.py` (Pillow)
+to export its lossless animated WebP, the official Kaggle PNG, and the personal
+favicon variants. Browsers prefer WebP, retain the GIF fallback, and select PNG
+stills for reduced motion. All animated formats pause together offscreen or in
+hidden tabs. `python3 code/check-web-assets.py http://localhost:8771` checks every
+decoded animation frame and its timing, official icon pixels, browser requests,
+and motion preferences in Chromium and Firefox.
+
+Run `python3 code/audit-homepage.py http://localhost:8771/` against a running
+preview to audit mobile and desktop sequentially with pinned Lighthouse 13.5.0.
+This needs Node/npm and Chrome (or Playwright Chromium); `CHROME_PATH` overrides
+the browser. HTML and JSON reports go to a temporary directory by default;
+`--output-dir /tmp/site-audit` selects a location. See the
+[16 October 2026 audit](docs/lighthouse-2026-10-16.md) for measurements and limits.
 
 Preview locally with `python3 code/serve.py`. This serves the homepage and
 sketchbook, and maps `/blog/` to the adjacent `../blog` repository, including its
