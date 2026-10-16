@@ -47,9 +47,8 @@ footer{max-width:992px;width:calc(100% - 48px);margin:48px auto 0;padding-top:14
 .research-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .intro .bio{margin-bottom:0}
 .reactor{width:100%;margin:0;color:var(--navy)}
-.reactor-stage{aspect-ratio:16/11;background:url("assets/fusion-reactor.png") center/100% 100% no-repeat;
-  image-rendering:pixelated}
-.matrix-stage{background-image:url("assets/random-matrix.png");image-rendering:auto}
+.reactor-stage{aspect-ratio:16/11;image-rendering:pixelated}
+.matrix-stage{image-rendering:auto}
 .reactor img{display:block;width:100%;height:auto;image-rendering:pixelated}
 .matrix img{image-rendering:auto}
 .resource-links a{display:inline-flex;align-items:center;gap:8px}
