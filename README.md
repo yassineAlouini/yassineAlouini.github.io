@@ -136,3 +136,18 @@ than the full viewport. Canvas buffers resize only when dimensions change; point
 handlers are passive, layout reads occur only on resize/scroll, reaction classes
 are cached, and DOM attributes/transforms are written only when their values change.
 The cat needs no framework, image downloads, audio or external service.
+
+## Claude Code Plugins
+
+### Nuclear Fusion Research
+A plugin for fusion energy research, plasma physics, and reactor design. Located in `fusion-research/`.
+
+**Commands:**
+- `literature-search` - Search arXiv for fusion research papers
+- `plasma-calc` - Calculate plasma physics parameters
+- `reactor-comparison` - Compare fusion reactor designs
+
+**Skills:**
+- Fusion fundamentals (reactions, Lawson criterion, confinement)
+- Plasma physics (MHD, transport, heating methods)
+- Reactor designs (ITER, stellarators, private ventures)
